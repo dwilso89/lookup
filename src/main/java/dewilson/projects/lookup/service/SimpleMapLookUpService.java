@@ -3,8 +3,9 @@ package dewilson.projects.lookup.service;
 import dewilson.projects.lookup.support.SimpleSupport;
 import dewilson.projects.lookup.support.Support;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
@@ -43,8 +44,9 @@ public class SimpleMapLookUpService implements LookUpService {
     }
 
     @Override
-    public OutputStream getFilter(String type) {
-        throw new UnsupportedOperationException();
+    public InputStream getFilter(final String type) {
+        final byte[] returnBytes = new byte[1024 * 512];
+        return new ByteArrayInputStream(returnBytes);
     }
 
     @Override

@@ -1,5 +1,6 @@
-package dewilson.projects.lookup.service;
+package dewilson.projects.lookup.hadoop;
 
+import dewilson.projects.lookup.service.LookUpService;
 import dewilson.projects.lookup.support.SimpleSupport;
 import dewilson.projects.lookup.support.Support;
 import org.apache.commons.compress.archivers.ArchiveException;
@@ -10,11 +11,12 @@ import org.apache.hadoop.io.BloomMapFile;
 import org.apache.hadoop.io.Text;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
 import java.util.Map;
 
-public class HadoopBloomMapLookUpService implements LookUpService {
+public class BloomMapLookUpService implements LookUpService {
 
     private final Support statusSupport;
     private final Support filterSupport;
@@ -22,8 +24,9 @@ public class HadoopBloomMapLookUpService implements LookUpService {
     private final Text key;
     private final Text value;
     private BloomMapFile.Reader reader;
+    private String bloomFilterLocation;
 
-    public HadoopBloomMapLookUpService() {
+    public BloomMapLookUpService() {
         this.statusSupport = new SimpleSupport();
         this.filterSupport = new SimpleSupport();
         this.conf = new Configuration();
@@ -73,8 +76,12 @@ public class HadoopBloomMapLookUpService implements LookUpService {
     }
 
     @Override
-    public OutputStream getFilter(final String type) {
-        throw new UnsupportedOperationException();
+    public InputStream getFilter(final String type) throws IOException {
+        if (type.equals("dynamic-hadoop-bloommap-2.10.0")) {
+            return new FileInputStream(new File(bloomFilterLocation));
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 
     @Override
@@ -99,6 +106,7 @@ public class HadoopBloomMapLookUpService implements LookUpService {
             path = new Path(resource);
         }
 
+        this.bloomFilterLocation = path.toString() + "/bloom";
         this.reader = new BloomMapFile.Reader(path, this.conf);
     }
 

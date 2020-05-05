@@ -20,10 +20,30 @@
             <artifactId>rapidoid-http-server</artifactId>
             <version>5.5.5</version>
         </dependency>
+        <!-- Hadoop Bloom MapFile -->
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-client</artifactId>
             <version>2.10.0</version>
+        </dependency>
+        <!-- Minimum Perfect Hash-->
+        <dependency>
+            <groupId>com.indeed</groupId>
+            <artifactId>mph-table</artifactId>
+            <version>1.0.4</version>
+        </dependency>
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.6.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.6.2</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -46,6 +66,14 @@
                     </configuration>
                 </execution>
             </executions>
+        </plugin>
+        <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.22.2</version>
+        </plugin>
+        <plugin>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <version>2.22.2</version>
         </plugin>
     </plugins>
     </build>

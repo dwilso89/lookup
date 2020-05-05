@@ -3,7 +3,7 @@ package dewilson.projects.lookup.service;
 import dewilson.projects.lookup.support.Support;
 
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
 import java.util.Map;
 
 public interface LookUpService {
@@ -22,7 +22,7 @@ public interface LookUpService {
 
     Support getStatusSupport();
 
-    OutputStream getFilter(String type);
+    InputStream getFilter(String type) throws IOException;
 
     Support getFilterSupport();
 
