@@ -16,6 +16,8 @@ public interface LookUpService {
 
     String getType();
 
+    boolean idExists(String id);
+
     String getStatus(String id);
 
     Support getStatusSupport();

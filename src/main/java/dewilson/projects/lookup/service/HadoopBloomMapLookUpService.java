@@ -36,6 +36,21 @@ public class HadoopBloomMapLookUpService implements LookUpService {
         config.forEach(this.conf::set);
     }
 
+
+    @Override
+    public boolean idExists(final String id) {
+        this.key.set(id);
+        try {
+            if (this.reader.probablyHasKey(this.key)) {
+                return (this.reader.get(this.key, this.value) != null);
+            }
+        } catch (final IOException ioe) {
+            throw new RuntimeException("Failed to check status of id [" + id + "]");
+        }
+
+        return false;
+    }
+
     @Override
     public String getStatus(final String id) {
         this.key.set(id);

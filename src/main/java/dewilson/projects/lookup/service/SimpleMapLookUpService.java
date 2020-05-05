@@ -22,7 +22,7 @@ public class SimpleMapLookUpService implements LookUpService {
         this.filterSupport = new SimpleSupport();
     }
 
-    public void addIdStatusPair(final String id, final String status) {
+    private void addIdStatusPair(final String id, final String status) {
         this.statusSupport.addSupportedType(status);
         this.idToStatusMap.put(id, status);
     }
@@ -30,6 +30,11 @@ public class SimpleMapLookUpService implements LookUpService {
     @Override
     public String getStatus(final String id) {
         return this.idToStatusMap.getOrDefault(id, "DNE");
+    }
+
+    @Override
+    public boolean idExists(final String id) {
+        return this.idToStatusMap.containsKey(id);
     }
 
     @Override
@@ -53,7 +58,7 @@ public class SimpleMapLookUpService implements LookUpService {
                 .lines()
                 .forEach(line -> {
                     final String[] tokens = line.split(",", 2);
-                    this.idToStatusMap.put(tokens[0], tokens[1]);
+                    addIdStatusPair(tokens[0], tokens[1]);
                 });
     }
 
