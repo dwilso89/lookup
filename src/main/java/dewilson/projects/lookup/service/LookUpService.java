@@ -4,8 +4,17 @@ import dewilson.projects.lookup.support.Support;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Map;
 
 public interface LookUpService {
+
+    default void initialize(Map<String, String> config) {
+        // no-op
+    }
+
+    void loadResource(String resource) throws IOException;
+
+    String getType();
 
     String getStatus(String id);
 
@@ -15,7 +24,4 @@ public interface LookUpService {
 
     Support getFilterSupport();
 
-    void loadResource(String resource) throws IOException;
-
-    String getType();
 }
