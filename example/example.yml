@@ -1,7 +1,0 @@
-on:
-  port: 8888
-  address: 0.0.0.0
-
-lookUp:
-  serviceType: simple
-  resource: example.txt

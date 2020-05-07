@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<artifactId>lookup-parent</artifactId>
+		<groupId>dewilson.projects.lookup</groupId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>lookup-minimum-perfect-hash</artifactId>
+	<version>${project.parent.version}</version>
+
+	<dependencies>
+		<dependency>
+			<groupId>dewilson.projects</groupId>
+			<artifactId>server</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<!-- Minimum Perfect Hash-->
+		<dependency>
+			<groupId>com.indeed</groupId>
+			<artifactId>mph-table</artifactId>
+			<version>1.0.4</version>
+		</dependency>
+		<!-- Test dependencies -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+		</dependency>
+	</dependencies>
+
+</project>
