@@ -1,5 +1,6 @@
 package dewilson.projects.lookup.service;
 
+import dewilson.projects.lookup.support.DefaultSupportTypes;
 import dewilson.projects.lookup.support.SimpleSupport;
 import dewilson.projects.lookup.support.Support;
 
@@ -14,22 +15,22 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SimpleMapLookUpService implements LookUpService {
 
     private final Map<String, String> idToStatusMap;
-    private final Support statusSupport;
+    private final Support valueSupport;
     private final Support filterSupport;
 
     public SimpleMapLookUpService() {
         this.idToStatusMap = new ConcurrentHashMap<>();
-        this.statusSupport = new SimpleSupport();
-        this.filterSupport = new SimpleSupport();
+        this.valueSupport = new SimpleSupport(DefaultSupportTypes.VALUE);
+        this.filterSupport = new SimpleSupport(DefaultSupportTypes.FILTER);
     }
 
     private void addIdStatusPair(final String id, final String status) {
-        this.statusSupport.addSupportedType(status);
+        this.valueSupport.addSupport(status);
         this.idToStatusMap.put(id, status);
     }
 
     @Override
-    public String getStatus(final String id) {
+    public String getValue(final String id) {
         return this.idToStatusMap.getOrDefault(id, "DNE");
     }
 
@@ -39,8 +40,8 @@ public class SimpleMapLookUpService implements LookUpService {
     }
 
     @Override
-    public Support getStatusSupport() {
-        return this.statusSupport;
+    public Support getValueSupport() {
+        return this.valueSupport;
     }
 
     @Override
@@ -65,7 +66,7 @@ public class SimpleMapLookUpService implements LookUpService {
     }
 
     @Override
-    public String getType() {
+    public String getServiceType() {
         return "simple";
     }
 }

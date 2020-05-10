@@ -36,11 +36,11 @@ public class Server {
         My.errorHandler((req, resp, error) -> resp.code(500).result("Error handling request"));
 
         // endpoints...
-        On.get("/exists").json((String id) -> lookUpService.getStatus(id));
+        On.get("/exists").json((String id) -> lookUpService.idExists(id));
 
-        On.get("/getSupportedStatuses").serve(() -> serializeJson(lookUpService.getStatusSupport()));
+        On.get("/getSupportedValues").serve(() -> serializeJson(lookUpService.getValueSupport()));
 
-        On.get("/getStatus").managed(true).json((String id) -> lookUpService.getStatus(id));
+        On.get("/getValue").managed(true).json((String id) -> lookUpService.getValue(id));
 
         On.get("/getSupportedFilters").serve(() -> serializeJson(lookUpService.getFilterSupport()));
 
@@ -69,8 +69,8 @@ public class Server {
         final String type = lookUpConf.get("serviceType").toString();
 
         for (final LookUpService potentialService : ServiceLoader.load(LookUpService.class)) {
-            System.out.println("Found service with type " + potentialService.getType());
-            if (potentialService.getType().trim().equalsIgnoreCase(type)) {
+            System.out.println("Found service with type " + potentialService.getServiceType());
+            if (potentialService.getServiceType().trim().equalsIgnoreCase(type)) {
                 lookUpService = potentialService;
                 break;
             }

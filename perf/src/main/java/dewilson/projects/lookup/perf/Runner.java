@@ -5,6 +5,7 @@ import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.utils.URIBuilder;
 
+import java.net.URI;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -14,7 +15,7 @@ public class Runner {
 
     public static void main(String[] args) throws Exception {
 
-        final int REQUESTS = 10000;
+        final int REQUESTS = 120000;
         final int THREADS = 8;
 
         final ExecutorService executor = Executors.newFixedThreadPool(THREADS);
@@ -35,18 +36,21 @@ public class Runner {
 
     static class Task implements Callable<Integer> {
         private final int requests;
+        private final URI uri;
 
-        public Task(int requests) {
+        Task(int requests) throws Exception {
             this.requests = requests;
+            this.uri = new URIBuilder("http://localhost:8888/exists")
+                    .setParameter("id", "2031-05-05")
+                    .build();
+
         }
 
         public Integer call() throws Exception {
             for (int i = 0; i < this.requests; i++) {
-                final Content content = Request.Get(
-                        new URIBuilder("http://0.0.0.0:8888/getStatus").setParameter("id", "a").build())
-                        .execute().returnContent();
+                final Content content = Request.Get(this.uri).execute().returnContent();
             }
-            return 50000;
+            return requests;
         }
 
     }

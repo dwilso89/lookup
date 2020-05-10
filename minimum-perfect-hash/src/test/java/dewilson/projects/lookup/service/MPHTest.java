@@ -4,6 +4,7 @@ import com.indeed.mph.TableConfig;
 import com.indeed.mph.TableWriter;
 import com.indeed.mph.serializers.SmartStringSerializer;
 import com.indeed.util.core.Pair;
+import dewilson.projects.lookup.support.DefaultSupportTypes;
 import dewilson.projects.lookup.support.SimpleSupport;
 import dewilson.projects.lookup.support.Support;
 import org.junit.jupiter.api.BeforeAll;
@@ -23,8 +24,7 @@ public class MPHTest {
     private static String mphResource;
 
     @BeforeAll
-    public static void createBloomMapFileArchive(@TempDir Path tempDir) throws Exception {
-        final org.apache.hadoop.fs.Path bloomPath = new org.apache.hadoop.fs.Path(tempDir.toString());
+    static void create(@TempDir Path tempDir) throws Exception {
         final TableConfig<String, String> config = new TableConfig()
                 .withKeySerializer(new SmartStringSerializer())
                 .withValueSerializer(new SmartStringSerializer());
@@ -47,13 +47,13 @@ public class MPHTest {
         lookup.initialize(new HashMap<>());
         lookup.loadResource(mphResource);
 
-        assertEquals(lookup.getStatus("a"), "PUBLIC");
-        assertEquals(lookup.getStatus("b"), "PRIVATE");
-        assertEquals(lookup.getStatus("c"), "REDACT");
-        assertEquals(lookup.getStatus("d"), "PUBLIC");
-        assertEquals(lookup.getStatus("e"), "PRIVATE");
-        assertEquals(lookup.getStatus("f"), "REDACT");
-        assertEquals(lookup.getStatus("g"), "DNE");
+        assertEquals(lookup.getValue("a"), "PUBLIC");
+        assertEquals(lookup.getValue("b"), "PRIVATE");
+        assertEquals(lookup.getValue("c"), "REDACT");
+        assertEquals(lookup.getValue("d"), "PUBLIC");
+        assertEquals(lookup.getValue("e"), "PRIVATE");
+        assertEquals(lookup.getValue("f"), "REDACT");
+        assertEquals(lookup.getValue("g"), "DNE");
     }
 
     @Test
@@ -67,16 +67,16 @@ public class MPHTest {
         lookup.initialize(new HashMap<>());
         lookup.loadResource(mphResource);
 
-        final Support statusSupport = new SimpleSupport();
-        statusSupport.addSupportedType("DNE");
+        final Support valueSupport = new SimpleSupport(DefaultSupportTypes.VALUE);
+        valueSupport.addSupport("DNE");
 
-        assertNotEquals(statusSupport, lookup.getStatusSupport());
+        assertNotEquals(valueSupport, lookup.getValueSupport());
 
-        statusSupport.addSupportedType("PUBLIC");
-        statusSupport.addSupportedType("PRIVATE");
-        statusSupport.addSupportedType("REDACT");
+        valueSupport.addSupport("PUBLIC");
+        valueSupport.addSupport("PRIVATE");
+        valueSupport.addSupport("REDACT");
 
-        assertEquals(statusSupport, lookup.getStatusSupport());
+        assertEquals(valueSupport, lookup.getValueSupport());
     }
 
 

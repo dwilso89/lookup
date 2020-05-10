@@ -13,8 +13,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>dewilson.projects</groupId>
-			<artifactId>server</artifactId>
+			<groupId>dewilson.projects.lookup</groupId>
+			<artifactId>lookup-server</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<!-- tgz handling -->
@@ -42,12 +42,8 @@
 					<artifactId>hadoop-mapreduce-client-common</artifactId>
 				</exclusion>
 				<exclusion>
-					<groupId>commons-net</groupId>
+					<groupId>commonsnet</groupId>
 					<artifactId>commons-net</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.google.guava</groupId>
-					<artifactId>guava</artifactId>
 				</exclusion>
 				<exclusion>
 					<groupId>commons-cli</groupId>
@@ -76,10 +72,6 @@
 				<exclusion>
 					<groupId>commons-io</groupId>
 					<artifactId>commons-io</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-collections</groupId>
-					<artifactId>commons-collections</artifactId>
 				</exclusion>
 				<exclusion>
 					<groupId>javax.servlet</groupId>
@@ -146,10 +138,6 @@
 					<artifactId>asm</artifactId>
 				</exclusion>
 				<exclusion>
-					<groupId>commons-logging</groupId>
-					<artifactId>commons-logging</artifactId>
-				</exclusion>
-				<exclusion>
 					<groupId>log4j</groupId>
 					<artifactId>log4j</artifactId>
 				</exclusion>
@@ -162,14 +150,6 @@
 					<artifactId>java-xmlbuilder</artifactId>
 				</exclusion>
 				<exclusion>
-					<groupId>commons-lang</groupId>
-					<artifactId>commons-lang</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-configuration</groupId>
-					<artifactId>commons-configuration</artifactId>
-				</exclusion>
-				<exclusion>
 					<groupId>commons-digester</groupId>
 					<artifactId>commons-digester</artifactId>
 				</exclusion>
@@ -180,10 +160,6 @@
 				<exclusion>
 					<groupId>org.apache.commons</groupId>
 					<artifactId>commons-lang3</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
 				</exclusion>
 				<exclusion>
 					<groupId>org.slf4j</groupId>

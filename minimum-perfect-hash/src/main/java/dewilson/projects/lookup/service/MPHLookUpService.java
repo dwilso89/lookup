@@ -1,6 +1,7 @@
 package dewilson.projects.lookup.service;
 
 import com.indeed.mph.TableReader;
+import dewilson.projects.lookup.support.DefaultSupportTypes;
 import dewilson.projects.lookup.support.SimpleSupport;
 import dewilson.projects.lookup.support.Support;
 
@@ -9,13 +10,13 @@ import java.io.InputStream;
 
 public class MPHLookUpService implements LookUpService {
 
-    private final Support statusSupport;
+    private final Support valueSupport;
     private final Support filterSupport;
     private TableReader<String, String> reader;
 
     public MPHLookUpService() {
-        this.statusSupport = new SimpleSupport();
-        this.filterSupport = new SimpleSupport();
+        this.valueSupport = new SimpleSupport(DefaultSupportTypes.VALUE);
+        this.filterSupport = new SimpleSupport(DefaultSupportTypes.FILTER);
     }
 
     @Override
@@ -24,7 +25,7 @@ public class MPHLookUpService implements LookUpService {
     }
 
     @Override
-    public String getStatus(final String id) {
+    public String getValue(final String id) {
         if (this.reader.containsKey(id)) {
             try {
                 return this.reader.get(id);
@@ -37,8 +38,8 @@ public class MPHLookUpService implements LookUpService {
     }
 
     @Override
-    public Support getStatusSupport() {
-        return this.statusSupport;
+    public Support getValueSupport() {
+        return this.valueSupport;
     }
 
     @Override
@@ -54,12 +55,12 @@ public class MPHLookUpService implements LookUpService {
     @Override
     public void loadResource(final String resource) throws IOException {
         this.reader = TableReader.open(resource);
-        this.reader.spliterator().forEachRemaining(pair -> this.statusSupport.addSupportedType(pair.getSecond()));
-        this.statusSupport.addSupportedType("DNE");
+        this.reader.spliterator().forEachRemaining(pair -> this.valueSupport.addSupport(pair.getSecond()));
+        this.valueSupport.addSupport("DNE");
     }
 
     @Override
-    public String getType() {
+    public String getServiceType() {
         return "mph-1.0.4";
     }
 

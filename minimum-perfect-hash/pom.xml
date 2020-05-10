@@ -13,8 +13,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>dewilson.projects</groupId>
-			<artifactId>server</artifactId>
+			<groupId>dewilson.projects.lookup</groupId>
+			<artifactId>lookup-server</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<!-- Minimum Perfect Hash-->

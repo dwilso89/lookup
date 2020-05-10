@@ -4,10 +4,12 @@ import java.util.Set;
 
 public interface Support {
 
-    void addSupportedType(String type);
+    String getSupportType();
 
-    Set<String> getSupportedTypes();
+    void addSupport(String type);
 
-    boolean supportsType(String type);
+    Set<String> getSupport();
+
+    boolean supports(String type);
 
 }

@@ -14,13 +14,13 @@ public interface LookUpService {
 
     void loadResource(String resource) throws IOException;
 
-    String getType();
+    String getServiceType();
 
     boolean idExists(String id);
 
-    String getStatus(String id);
+    String getValue(String id);
 
-    Support getStatusSupport();
+    Support getValueSupport();
 
     InputStream getFilter(String type) throws IOException;
 
