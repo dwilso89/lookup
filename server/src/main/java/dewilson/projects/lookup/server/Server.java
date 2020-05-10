@@ -80,6 +80,8 @@ public class Server {
             throw new RuntimeException("Could not find service " + type);
         }
 
+        lookUpService.initialize(lookUpConf.toFlatMap());
+
         final Object resource = lookUpConf.get("resource");
         if (resource != null) {
             try {

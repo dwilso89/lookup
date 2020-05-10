@@ -16,7 +16,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Map;
 
 public class BloomMapLookUpService implements LookUpService {
@@ -43,7 +42,6 @@ public class BloomMapLookUpService implements LookUpService {
         final Text key = new Text(id);
         try {
             if (this.reader.probablyHasKey(key)) {
-                System.out.println("Probably has key");
                 return (this.reader.get(key, new Text()) != null);
             }
         } catch (final IOException ioe) {
@@ -119,7 +117,6 @@ public class BloomMapLookUpService implements LookUpService {
         final File source = new File(resource);
         final File destination = new File(resource.substring(0, resource.lastIndexOf('/')));
         try {
-            System.out.println(source + " " + destination);
             new Expander().expand(source, destination);
         } catch (final ArchiveException ae) {
             throw new IOException("Could not expand archive at resource location [" + resource + "]", ae);
@@ -128,12 +125,11 @@ public class BloomMapLookUpService implements LookUpService {
     }
 
     private Path loadCsv(final String resource) throws IOException {
+        final File resourceFile = new File(resource);
+        final Path bloomPath = new Path(this.conf.get("lookUp.work.dir", resourceFile.getParent().toString()) + "/bloom");
 
-        final java.nio.file.Path resourcePath = Paths.get(resource);
-        final Path bloomPath = new Path(this.conf.get("lookup.work.dir", resourcePath.getParent().toString()) + "/bloom");
-
-        final int keyCol = this.conf.getInt("lookup.key.col", 0);
-        final int valCol = this.conf.getInt("lookup.val.col", 1);
+        final int keyCol = this.conf.getInt("lookUp.key.col", 0);
+        final int valCol = this.conf.getInt("lookUp.val.col", 1);
 
         try (final BloomMapFile.Writer writer = new BloomMapFile.Writer(
                 this.conf,
@@ -143,7 +139,7 @@ public class BloomMapLookUpService implements LookUpService {
                 BloomMapFile.Writer.compression(SequenceFile.CompressionType.BLOCK))) {
             final Text key = new Text();
             final Text value = new Text();
-            Files.lines(resourcePath).forEach(line -> {
+            Files.lines(resourceFile.toPath()).forEach(line -> {
                 final String[] lineSplit = line.split(",");
                 key.set(lineSplit[keyCol]);
                 value.set(lineSplit[valCol]);

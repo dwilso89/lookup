@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.DataInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Path;
 import java.util.Map;
@@ -33,22 +32,7 @@ public class BloomMapFileTest {
             writer.append(new Text("e"), new Text("PRIVATE"));
             writer.append(new Text("f"), new Text("REDACT"));
         }
-/*
-        // too lazy to create "correctly"
-        final String gz = bloomOutput + ".gz";
-        new Archiver().create("zip", new File(gz), new File(bloomOutput));
-        final String tgz = bloomOutput + ".tgz";
-        new Archiver().create("tar", new File(tgz), new File(bloomOutput));
-        for(File file : tempDir.toFile().listFiles()){
-            System.out.println(file.toString());
-        }
 
-        bloomMapFileResource = tgz;
-        */
-
-        for (File file : tempDir.toFile().listFiles()) {
-            System.out.println(file.toString());
-        }
         bloomMapFileResource = bloomPath.toString();
     }
 
@@ -56,9 +40,9 @@ public class BloomMapFileTest {
     void testExists(@TempDir Path tempDir) throws Exception {
         final BloomMapLookUpService lookup = new BloomMapLookUpService();
         Map<String, String> map = Maps.newHashMap();
-        map.put("lookup.key.col", "0");
-        map.put("lookup.val.col", "4");
-        map.put("lookup.work.dir", tempDir.toString() + "/bloomBig");
+        map.put("lookUp.key.col", "0");
+        map.put("lookUp.val.col", "4");
+        map.put("lookUp.work.dir", tempDir.toString() + "/bloomBig");
         lookup.initialize(map);
         lookup.loadResource("src/test/resources/GOOG.csv");
 

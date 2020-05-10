@@ -15,7 +15,7 @@ public class Runner {
 
     public static void main(String[] args) throws Exception {
 
-        final int REQUESTS = 120000;
+        final int REQUESTS = 100000;
         final int THREADS = 8;
 
         final ExecutorService executor = Executors.newFixedThreadPool(THREADS);
@@ -40,10 +40,12 @@ public class Runner {
 
         Task(int requests) throws Exception {
             this.requests = requests;
+
             this.uri = new URIBuilder("http://localhost:8888/exists")
-                    .setParameter("id", "2031-05-05")
+                    .setParameter("id", "2025-05-05")
                     .build();
 
+            // this.uri = new URIBuilder("http://localhost:8888/getSupportedFilters").build();
         }
 
         public Integer call() throws Exception {
