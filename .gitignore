@@ -1,4 +1,9 @@
 ##############################
+## Project Specific
+##############################
+*.ignore/
+
+##############################
 ## Java
 ##############################
 .mtj.tmp/
@@ -67,7 +72,6 @@ local.properties
 nbproject/private/
 build/
 nbbuild/
-dist/
 nbdist/
 nbactions.xml
 nb-configuration.xml

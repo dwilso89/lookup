@@ -1,0 +1,11 @@
+on:
+  port: 8888
+  address: 0.0.0.0
+
+lookUp:
+  serviceType: hadoop-bloommap-2.10
+  resource: ./data/GOOG.csv
+  resourceType: csv
+  work.dir: ../target/
+  key.col: 0
+  val.col: 4

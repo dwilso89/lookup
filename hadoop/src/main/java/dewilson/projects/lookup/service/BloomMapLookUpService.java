@@ -1,22 +1,26 @@
 package dewilson.projects.lookup.service;
 
+import com.google.common.collect.Maps;
+import dewilson.projects.lookup.reader.CSVKVReader;
+import dewilson.projects.lookup.reader.KVReader;
 import dewilson.projects.lookup.support.DefaultSupportTypes;
 import dewilson.projects.lookup.support.SimpleSupport;
 import dewilson.projects.lookup.support.Support;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.examples.Expander;
+import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.BloomMapFile;
 import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.util.bloom.BloomFilter;
+import org.rapidoid.pool.Pools;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
+import java.io.*;
 import java.util.Map;
+
+import static org.apache.hadoop.fs.CommonConfigurationKeysPublic.IO_MAPFILE_BLOOM_SIZE_KEY;
 
 public class BloomMapLookUpService implements LookUpService {
 
@@ -41,6 +45,7 @@ public class BloomMapLookUpService implements LookUpService {
     public boolean idExists(final String id) {
         final Text key = new Text(id);
         try {
+            // TODO manage lack of thread safety
             if (this.reader.probablyHasKey(key)) {
                 return (this.reader.get(key, new Text()) != null);
             }
@@ -89,16 +94,21 @@ public class BloomMapLookUpService implements LookUpService {
 
     @Override
     public void loadResource(final String resource) throws IOException {
-        final Path path;
+        final String resourceType = this.conf.get("lookUp.resourceType", "tgz");
 
-        if (resource.endsWith("tgz")) {
-            path = loadTgz(resource);
-        } else if (new File(resource).isDirectory()) {
-            path = new Path(resource);
-        } else if (resource.endsWith("csv")) {
-            path = loadCsv(resource);
-        } else {
-            path = new Path(resource);
+        final Path path;
+        switch (resourceType) {
+            case "tgz":
+                path = loadTgz(resource);
+                break;
+            case "dir":
+                path = new Path(resource);
+                break;
+            case "csv":
+                path = loadCsv(resource);
+                break;
+            default:
+                path = new Path(resource);
         }
 
         this.bloomFilterLocation = path.toString() + "/bloom";
@@ -111,6 +121,8 @@ public class BloomMapLookUpService implements LookUpService {
                 this.valueSupport.addSupport(value.toString());
             }
         }
+
+        this.filterSupport.addSupport("dynamic-hadoop-bloommap-2.10.0");
     }
 
     private Path loadTgz(final String resource) throws IOException {
@@ -119,17 +131,15 @@ public class BloomMapLookUpService implements LookUpService {
         try {
             new Expander().expand(source, destination);
         } catch (final ArchiveException ae) {
-            throw new IOException("Could not expand archive at resource location [" + resource + "]", ae);
+            throw new IOException("Could not expand compressed archive at resource location [" + resource + "]", ae);
         }
         return new Path(destination.toString());
     }
 
     private Path loadCsv(final String resource) throws IOException {
-        final File resourceFile = new File(resource);
-        final Path bloomPath = new Path(this.conf.get("lookUp.work.dir", resourceFile.getParent().toString()) + "/bloom");
+        final Path bloomPath = new Path(this.conf.get("lookUp.work.dir", new File(resource).getAbsolutePath()) + "/bloom");
 
-        final int keyCol = this.conf.getInt("lookUp.key.col", 0);
-        final int valCol = this.conf.getInt("lookUp.val.col", 1);
+        this.conf.setLong(IO_MAPFILE_BLOOM_SIZE_KEY, 86400000);
 
         try (final BloomMapFile.Writer writer = new BloomMapFile.Writer(
                 this.conf,
@@ -137,12 +147,13 @@ public class BloomMapLookUpService implements LookUpService {
                 BloomMapFile.Writer.keyClass(Text.class),
                 BloomMapFile.Writer.valueClass(Text.class),
                 BloomMapFile.Writer.compression(SequenceFile.CompressionType.BLOCK))) {
+            final Map<String, String> map = Maps.newHashMap();
+            this.conf.forEach((entry) -> map.put(entry.getKey(), entry.getValue()));
             final Text key = new Text();
             final Text value = new Text();
-            Files.lines(resourceFile.toPath()).forEach(line -> {
-                final String[] lineSplit = line.split(",");
-                key.set(lineSplit[keyCol]);
-                value.set(lineSplit[valCol]);
+            new CSVKVReader().initialize(resource, map).getKVStream().forEach(pair -> {
+                key.set(pair.getKey());
+                value.set(pair.getValue());
                 try {
                     writer.append(key, value);
                 } catch (final IOException ioe) {

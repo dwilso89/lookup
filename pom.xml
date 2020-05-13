@@ -18,8 +18,11 @@
 		<module>server</module>
 		<module>minimum-perfect-hash</module>
 		<module>hadoop</module>
-		<module>perf</module>
+		<module>paldb</module>
 		<module>dist</module>
+		<module>perf</module>
+		<module>filters</module>
+		<module>client</module>
 	</modules>
 
 	<dependencyManagement>

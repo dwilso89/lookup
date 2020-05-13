@@ -38,26 +38,23 @@ public class BloomMapFileTest {
 
     @Test
     void testExists(@TempDir Path tempDir) throws Exception {
-        final BloomMapLookUpService lookup = new BloomMapLookUpService();
-        Map<String, String> map = Maps.newHashMap();
+        final LookUpService lookup = new BloomMapLookUpService();
+        final Map<String, String> map = Maps.newHashMap();
         map.put("lookUp.key.col", "0");
         map.put("lookUp.val.col", "4");
         map.put("lookUp.work.dir", tempDir.toString() + "/bloomBig");
+        map.put("lookUp.resourceType", "csv");
         lookup.initialize(map);
-        lookup.loadResource("src/test/resources/GOOG.csv");
+        lookup.loadResource("src/test/resources/GOOG_2020.csv");
 
         assertTrue(lookup.idExists("2020-05-05"));
+        assertFalse(lookup.idExists("2025-05-05"));
     }
 
     @Test
-    void testReadfromTgz() {
-
-    }
-
-    @Test
-    void testGetStatus() throws Exception {
+    void testGetValue() throws Exception {
         final BloomMapLookUpService lookup = new BloomMapLookUpService();
-        lookup.initialize(Maps.newHashMap());
+        lookup.initialize(Map.of("lookUp.resourceType", "dir"));
         lookup.loadResource(bloomMapFileResource);
 
         assertEquals(lookup.getValue("a"), "PUBLIC");
@@ -72,7 +69,7 @@ public class BloomMapFileTest {
     @Test
     void testGetFilter() throws Exception {
         final BloomMapLookUpService lookup = new BloomMapLookUpService();
-        lookup.initialize(Maps.newHashMap());
+        lookup.initialize(Map.of("lookUp.resourceType", "dir"));
         lookup.loadResource(bloomMapFileResource);
 
         final byte[] originalDynamicBloomFilter = IOUtils.readFullyToByteArray(

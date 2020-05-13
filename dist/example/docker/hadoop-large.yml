@@ -1,0 +1,11 @@
+# This configuration file requires a Hadoop Bloom MapFile to already be generated and exist in
+#  "dist/example/data/bloomMapFile.ignore"
+on:
+  port: 8888
+  address: 0.0.0.0
+
+lookUp:
+  serviceType: hadoop-bloommap-2.10
+  resource: /opt/lookup/data/bloomMapFile.ignore
+  resourceType: dir
+  work.dir: /tmp

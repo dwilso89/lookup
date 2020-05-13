@@ -80,8 +80,11 @@ public class Server {
             throw new RuntimeException("Could not find service " + type);
         }
 
+        long start = System.currentTimeMillis();
         lookUpService.initialize(lookUpConf.toFlatMap());
+        System.out.println(String.format("Initialization finished in [%d]ms", System.currentTimeMillis() - start));
 
+        start = System.currentTimeMillis();
         final Object resource = lookUpConf.get("resource");
         if (resource != null) {
             try {
@@ -90,6 +93,8 @@ public class Server {
                 throw new RuntimeException("Could not load resource [" + resource + "] with service [" + type + "]", ioe);
             }
         }
+        System.out.println(String.format("Resource loading finished in [%d]ms", System.currentTimeMillis() - start));
+
     }
 
     private static String serializeJson(final Object o) {

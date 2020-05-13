@@ -45,7 +45,7 @@ public class Runner {
                     .setParameter("id", "2025-05-05")
                     .build();
 
-            // this.uri = new URIBuilder("http://localhost:8888/getSupportedFilters").build();
+            // this.uri = new URIBuilder("http://localhost:8888/get").build();
         }
 
         public Integer call() throws Exception {

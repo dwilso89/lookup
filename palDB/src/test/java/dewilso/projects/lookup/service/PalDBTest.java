@@ -1,10 +1,10 @@
-package dewilson.projects.lookup.service;
+package dewilso.projects.lookup.service;
 
 import com.google.common.collect.Maps;
-import com.indeed.mph.TableConfig;
-import com.indeed.mph.TableWriter;
-import com.indeed.mph.serializers.SmartStringSerializer;
-import com.indeed.util.core.Pair;
+import com.linkedin.paldb.api.PalDB;
+import com.linkedin.paldb.api.StoreWriter;
+import dewilson.projects.lookup.service.LookUpService;
+import dewilson.projects.lookup.service.PalDBLookUpService;
 import dewilson.projects.lookup.support.DefaultSupportTypes;
 import dewilson.projects.lookup.support.SimpleSupport;
 import dewilson.projects.lookup.support.Support;
@@ -12,41 +12,35 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class MPHTest {
+public class PalDBTest {
 
-    private static String mphResource;
+    private static String palDBResource;
 
     @BeforeAll
     static void create(@TempDir Path tempDir) throws Exception {
-        final TableConfig<String, String> config = new TableConfig()
-                .withKeySerializer(new SmartStringSerializer())
-                .withValueSerializer(new SmartStringSerializer());
-
-        final Set<Pair<String, String>> entries = new HashSet<>();
-        entries.add(new Pair<>("a", "PUBLIC"));
-        entries.add(new Pair<>("b", "PRIVATE"));
-        entries.add(new Pair<>("c", "REDACT"));
-        entries.add(new Pair<>("d", "PUBLIC"));
-        entries.add(new Pair<>("e", "PRIVATE"));
-        entries.add(new Pair<>("f", "REDACT"));
-        TableWriter.write(tempDir.toFile(), config, entries);
-
-        mphResource = tempDir.toString();
+        palDBResource = tempDir.toString() + "/palDB-test";
+        final StoreWriter writer = PalDB.createWriter(new File(palDBResource));
+        writer.put("a", "PUBLIC");
+        writer.put("b", "PRIVATE");
+        writer.put("c", "REDACT");
+        writer.put("d", "PUBLIC");
+        writer.put("e", "PRIVATE");
+        writer.put("f", "REDACT");
+        writer.close();
     }
 
     @Test
-    void testGetStatus() throws Exception {
-        final MPHLookUpService lookup = new MPHLookUpService();
+    void testGetValue() throws Exception {
+        final PalDBLookUpService lookup = new PalDBLookUpService();
         lookup.initialize(new HashMap<>());
-        lookup.loadResource(mphResource);
+        lookup.loadResource(palDBResource);
 
         assertEquals(lookup.getValue("a"), "PUBLIC");
         assertEquals(lookup.getValue("b"), "PRIVATE");
@@ -59,11 +53,11 @@ public class MPHTest {
 
     @Test
     void testExists(@TempDir Path tempDir) throws Exception {
-        final LookUpService lookup = new MPHLookUpService();
+        final LookUpService lookup = new PalDBLookUpService();
         final Map<String, String> map = Maps.newHashMap();
         map.put("lookUp.key.col", "0");
         map.put("lookUp.val.col", "4");
-        map.put("lookUp.work.dir", tempDir.toString() + "/palDB");
+        map.put("lookUp.work.dir", tempDir.toString() + "/csv");
         map.put("lookUp.resourceType", "csv");
         lookup.initialize(map);
         lookup.loadResource("src/test/resources/GOOG_2020.csv");
@@ -74,9 +68,9 @@ public class MPHTest {
 
     @Test
     void testGetValues() throws Exception {
-        final MPHLookUpService lookup = new MPHLookUpService();
+        final LookUpService lookup = new PalDBLookUpService();
         lookup.initialize(new HashMap<>());
-        lookup.loadResource(mphResource);
+        lookup.loadResource(palDBResource);
 
         final Support valueSupport = new SimpleSupport(DefaultSupportTypes.VALUE);
         valueSupport.addSupport("DNE");
