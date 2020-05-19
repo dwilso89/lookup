@@ -1,4 +1,4 @@
-package dewilson.projects.lookup.service;
+package dewilson.projects.lookup.connector;
 
 import com.google.common.collect.Maps;
 import org.apache.hadoop.conf.Configuration;
@@ -38,7 +38,7 @@ public class BloomMapFileTest {
 
     @Test
     void testExists(@TempDir Path tempDir) throws Exception {
-        final LookUpService lookup = new BloomMapLookUpService();
+        final LookUpConnector lookup = new BloomMapLookUpConnector();
         final Map<String, String> map = Maps.newHashMap();
         map.put("lookUp.key.col", "0");
         map.put("lookUp.val.col", "4");
@@ -47,13 +47,19 @@ public class BloomMapFileTest {
         lookup.initialize(map);
         lookup.loadResource("src/test/resources/GOOG_2020.csv");
 
+        long start = System.currentTimeMillis();
+        for(int i = 0; i < 100000; i++){
+            lookup.idExists("2025-05-05");
+        }
+        System.out.println(System.currentTimeMillis() - start);
+
         assertTrue(lookup.idExists("2020-05-05"));
         assertFalse(lookup.idExists("2025-05-05"));
     }
 
     @Test
     void testGetValue() throws Exception {
-        final BloomMapLookUpService lookup = new BloomMapLookUpService();
+        final BloomMapLookUpConnector lookup = new BloomMapLookUpConnector();
         lookup.initialize(Map.of("lookUp.resourceType", "dir"));
         lookup.loadResource(bloomMapFileResource);
 
@@ -68,7 +74,7 @@ public class BloomMapFileTest {
 
     @Test
     void testGetFilter() throws Exception {
-        final BloomMapLookUpService lookup = new BloomMapLookUpService();
+        final BloomMapLookUpConnector lookup = new BloomMapLookUpConnector();
         lookup.initialize(Map.of("lookUp.resourceType", "dir"));
         lookup.loadResource(bloomMapFileResource);
 

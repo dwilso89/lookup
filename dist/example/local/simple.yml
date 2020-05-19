@@ -4,4 +4,4 @@ on:
 
 lookUp:
   serviceType: simple
-  resource: ./data/simple.csv
+  resource: ./data/bigCSV.ignore/bigfile.csv

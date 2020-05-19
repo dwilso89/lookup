@@ -1,28 +1,24 @@
-package dewilson.projects.lookup.service;
+package dewilson.projects.lookup.connector;
 
 import com.google.common.collect.Maps;
 import dewilson.projects.lookup.reader.CSVKVReader;
-import dewilson.projects.lookup.reader.KVReader;
 import dewilson.projects.lookup.support.DefaultSupportTypes;
 import dewilson.projects.lookup.support.SimpleSupport;
 import dewilson.projects.lookup.support.Support;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.examples.Expander;
-import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.BloomMapFile;
 import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.util.bloom.BloomFilter;
-import org.rapidoid.pool.Pools;
 
 import java.io.*;
 import java.util.Map;
 
 import static org.apache.hadoop.fs.CommonConfigurationKeysPublic.IO_MAPFILE_BLOOM_SIZE_KEY;
 
-public class BloomMapLookUpService implements LookUpService {
+public class BloomMapLookUpConnector implements LookUpConnector {
 
     private final Support valueSupport;
     private final Support filterSupport;
@@ -30,7 +26,7 @@ public class BloomMapLookUpService implements LookUpService {
     private BloomMapFile.Reader reader;
     private String bloomFilterLocation;
 
-    public BloomMapLookUpService() {
+    public BloomMapLookUpConnector() {
         this.valueSupport = new SimpleSupport(DefaultSupportTypes.VALUE);
         this.filterSupport = new SimpleSupport(DefaultSupportTypes.FILTER);
         this.conf = new Configuration();
@@ -42,7 +38,7 @@ public class BloomMapLookUpService implements LookUpService {
     }
 
     @Override
-    public boolean idExists(final String id) {
+    public synchronized boolean idExists(final String id) {
         final Text key = new Text(id);
         try {
             // TODO manage lack of thread safety
@@ -57,25 +53,19 @@ public class BloomMapLookUpService implements LookUpService {
     }
 
     @Override
-    public String getValue(final String id) {
+    public synchronized String getValue(final String id) {
         final Text key = new Text(id);
         try {
-            if (this.reader.probablyHasKey(key)) {
-                final Text value = new Text();
-                if (this.reader.get(key, value) != null) {
-                    return value.toString();
-                }
+            // TODO manage lack of thread safety
+            final Text value = new Text();
+            if (this.reader.get(key, value) != null) {
+                return value.toString();
             }
         } catch (final IOException ioe) {
             throw new RuntimeException("Failed to check status of id [" + id + "]");
         }
 
         return "DNE";
-    }
-
-    @Override
-    public Support getValueSupport() {
-        return this.valueSupport;
     }
 
     @Override

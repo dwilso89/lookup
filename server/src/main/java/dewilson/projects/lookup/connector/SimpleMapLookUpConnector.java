@@ -1,4 +1,4 @@
-package dewilson.projects.lookup.service;
+package dewilson.projects.lookup.connector;
 
 import dewilson.projects.lookup.support.DefaultSupportTypes;
 import dewilson.projects.lookup.support.SimpleSupport;
@@ -12,20 +12,17 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class SimpleMapLookUpService implements LookUpService {
+public class SimpleMapLookUpConnector implements LookUpConnector {
 
     private final Map<String, String> idToStatusMap;
-    private final Support valueSupport;
     private final Support filterSupport;
 
-    public SimpleMapLookUpService() {
+    public SimpleMapLookUpConnector() {
         this.idToStatusMap = new ConcurrentHashMap<>();
-        this.valueSupport = new SimpleSupport(DefaultSupportTypes.VALUE);
         this.filterSupport = new SimpleSupport(DefaultSupportTypes.FILTER);
     }
 
     private void addIdStatusPair(final String id, final String status) {
-        this.valueSupport.addSupport(status);
         this.idToStatusMap.put(id, status);
     }
 
@@ -37,11 +34,6 @@ public class SimpleMapLookUpService implements LookUpService {
     @Override
     public boolean idExists(final String id) {
         return this.idToStatusMap.containsKey(id);
-    }
-
-    @Override
-    public Support getValueSupport() {
-        return this.valueSupport;
     }
 
     @Override

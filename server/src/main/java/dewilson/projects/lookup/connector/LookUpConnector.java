@@ -1,4 +1,4 @@
-package dewilson.projects.lookup.service;
+package dewilson.projects.lookup.connector;
 
 import dewilson.projects.lookup.support.Support;
 
@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
-public interface LookUpService {
+public interface LookUpConnector {
 
     default void initialize(Map<String, String> config) {
         // no-op
@@ -19,8 +19,6 @@ public interface LookUpService {
     boolean idExists(String id);
 
     String getValue(String id);
-
-    Support getValueSupport();
 
     InputStream getFilter(String type) throws IOException;
 

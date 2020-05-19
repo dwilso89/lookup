@@ -2,7 +2,7 @@ package dewilson.projects.lookup.server;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dewilson.projects.lookup.service.LookUpService;
+import dewilson.projects.lookup.connector.LookUpConnector;
 import org.rapidoid.config.Conf;
 import org.rapidoid.config.Config;
 import org.rapidoid.setup.App;
@@ -14,9 +14,9 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.ServiceLoader;
 
-public class Server {
+public class RapidoidRestServer {
 
-    private static LookUpService lookUpService;
+    private static LookUpConnector lookUpConnector;
     private static int CHUNK_TRANSFER_SIZE = 256 * 1024;
 
     public static void main(final String[] args) {
@@ -30,26 +30,24 @@ public class Server {
 
         // configure LookUp service...
         final Config lookUpConf = Conf.section("lookUp");
-        initializeLookUpService(lookUpConf);
+        initializeLookUpConnector(lookUpConf);
 
         // handle errors...
         My.errorHandler((req, resp, error) -> resp.code(500).result("Error handling request"));
 
         // endpoints...
-        On.get("/exists").json((String id) -> lookUpService.idExists(id));
+        On.get("/exists").json((String id) -> lookUpConnector.idExists(id));
 
-        On.get("/getSupportedValues").serve(() -> serializeJson(lookUpService.getValueSupport()));
+        On.get("/getValue").managed(true).json((String id) -> lookUpConnector.getValue(id));
 
-        On.get("/getValue").managed(true).json((String id) -> lookUpService.getValue(id));
-
-        On.get("/getSupportedFilters").serve(() -> serializeJson(lookUpService.getFilterSupport()));
+        On.get("/getSupportedFilters").serve(() -> serializeJson(lookUpConnector.getFilterSupport()));
 
         On.get("/getFilter").plain((req, resp) -> {
             req.async(); // mark asynchronous request processing
 
             final byte[] bytes = new byte[CHUNK_TRANSFER_SIZE];
 
-            try (final InputStream is = lookUpService.getFilter(req.param("type"))) {
+            try (final InputStream is = lookUpConnector.getFilter(req.param("type"))) {
                 int numRead;
                 while (-1 != (numRead = is.read(bytes))) {
                     // if last chunk or partial read for some reason...
@@ -65,30 +63,30 @@ public class Server {
 
     }
 
-    private static void initializeLookUpService(final Config lookUpConf) {
+    private static void initializeLookUpConnector(final Config lookUpConf) {
         final String type = lookUpConf.get("serviceType").toString();
 
-        for (final LookUpService potentialService : ServiceLoader.load(LookUpService.class)) {
+        for (final LookUpConnector potentialService : ServiceLoader.load(LookUpConnector.class)) {
             System.out.println("Found service with type " + potentialService.getServiceType());
             if (potentialService.getServiceType().trim().equalsIgnoreCase(type)) {
-                lookUpService = potentialService;
+                lookUpConnector = potentialService;
                 break;
             }
         }
 
-        if(lookUpService == null){
+        if(lookUpConnector == null){
             throw new RuntimeException("Could not find service " + type);
         }
 
         long start = System.currentTimeMillis();
-        lookUpService.initialize(lookUpConf.toFlatMap());
+        lookUpConnector.initialize(lookUpConf.toFlatMap());
         System.out.println(String.format("Initialization finished in [%d]ms", System.currentTimeMillis() - start));
 
         start = System.currentTimeMillis();
         final Object resource = lookUpConf.get("resource");
         if (resource != null) {
             try {
-                lookUpService.loadResource(resource.toString());
+                lookUpConnector.loadResource(resource.toString());
             } catch (final IOException ioe) {
                 throw new RuntimeException("Could not load resource [" + resource + "] with service [" + type + "]", ioe);
             }

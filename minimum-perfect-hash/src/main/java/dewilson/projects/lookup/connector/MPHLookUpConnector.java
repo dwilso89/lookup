@@ -1,4 +1,4 @@
-package dewilson.projects.lookup.service;
+package dewilson.projects.lookup.connector;
 
 import com.google.common.collect.Maps;
 import com.indeed.mph.TableConfig;
@@ -7,7 +7,6 @@ import com.indeed.mph.TableWriter;
 import com.indeed.mph.serializers.SmartStringSerializer;
 import com.indeed.util.core.Pair;
 import dewilson.projects.lookup.reader.CSVKVReader;
-import dewilson.projects.lookup.reader.KVReader;
 import dewilson.projects.lookup.support.DefaultSupportTypes;
 import dewilson.projects.lookup.support.SimpleSupport;
 import dewilson.projects.lookup.support.Support;
@@ -18,16 +17,14 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.stream.Stream;
 
-public class MPHLookUpService implements LookUpService {
+public class MPHLookUpConnector implements LookUpConnector {
 
-    private final Support valueSupport;
     private final Support filterSupport;
     private final Map<String, String> config;
     private TableReader<String, String> reader;
 
 
-    public MPHLookUpService() {
-        this.valueSupport = new SimpleSupport(DefaultSupportTypes.VALUE);
+    public MPHLookUpConnector() {
         this.filterSupport = new SimpleSupport(DefaultSupportTypes.FILTER);
         this.config = Maps.newHashMap();
     }
@@ -56,11 +53,6 @@ public class MPHLookUpService implements LookUpService {
     }
 
     @Override
-    public Support getValueSupport() {
-        return this.valueSupport;
-    }
-
-    @Override
     public InputStream getFilter(final String type) {
         throw new UnsupportedOperationException("No filters are supported yet for MPH");
     }
@@ -81,14 +73,14 @@ public class MPHLookUpService implements LookUpService {
                 break;
             case "csv":
                 mphFile = this.config.getOrDefault("lookUp.work.dir", "/tmp") + "/mph";
-                final TableConfig<String, String> tableConfig = new TableConfig()
+                final TableConfig<String, String> tableConfig = new TableConfig<String, String>()
                         .withKeySerializer(new SmartStringSerializer())
                         .withValueSerializer(new SmartStringSerializer());
 
                 final Stream<Pair<String, String>> pairStream = new CSVKVReader()
                         .initialize(resource, this.config)
                         .getKVStream()
-                        .map(pair -> new Pair<String, String>(pair.getKey(), pair.getValue()));
+                        .map(pair -> new Pair<>(pair.getKey(), pair.getValue()));
 
                 TableWriter.writeWithTempStorage(new File(mphFile), tableConfig, pairStream.iterator());
                 break;
@@ -96,8 +88,6 @@ public class MPHLookUpService implements LookUpService {
                 throw new IllegalArgumentException("MPH does not support resource type [" + resourceType + "]");
         }
         this.reader = TableReader.open(mphFile);
-        this.reader.spliterator().forEachRemaining(pair -> this.valueSupport.addSupport(pair.getSecond()));
-        this.valueSupport.addSupport("DNE");
     }
 
     @Override

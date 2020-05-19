@@ -8,5 +8,9 @@ lookUp:
   resourceType: csv
   work.dir: ../target/
   filter.guavaBloom: true
+  filter.scalaBloom: true
+  filter.activeType: scalaBloom
   key.col: 0
   val.col: 4
+  partition: true
+  partitions: 4

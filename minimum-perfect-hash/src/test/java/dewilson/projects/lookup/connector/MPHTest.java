@@ -1,13 +1,10 @@
-package dewilson.projects.lookup.service;
+package dewilson.projects.lookup.connector;
 
 import com.google.common.collect.Maps;
 import com.indeed.mph.TableConfig;
 import com.indeed.mph.TableWriter;
 import com.indeed.mph.serializers.SmartStringSerializer;
 import com.indeed.util.core.Pair;
-import dewilson.projects.lookup.support.DefaultSupportTypes;
-import dewilson.projects.lookup.support.SimpleSupport;
-import dewilson.projects.lookup.support.Support;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -20,13 +17,13 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class MPHTest {
+class MPHTest {
 
     private static String mphResource;
 
     @BeforeAll
     static void create(@TempDir Path tempDir) throws Exception {
-        final TableConfig<String, String> config = new TableConfig()
+        final TableConfig<String, String> config = new TableConfig<String, String>()
                 .withKeySerializer(new SmartStringSerializer())
                 .withValueSerializer(new SmartStringSerializer());
 
@@ -44,7 +41,7 @@ public class MPHTest {
 
     @Test
     void testGetStatus() throws Exception {
-        final MPHLookUpService lookup = new MPHLookUpService();
+        final MPHLookUpConnector lookup = new MPHLookUpConnector();
         lookup.initialize(new HashMap<>());
         lookup.loadResource(mphResource);
 
@@ -59,7 +56,7 @@ public class MPHTest {
 
     @Test
     void testExists(@TempDir Path tempDir) throws Exception {
-        final LookUpService lookup = new MPHLookUpService();
+        final LookUpConnector lookup = new MPHLookUpConnector();
         final Map<String, String> map = Maps.newHashMap();
         map.put("lookUp.key.col", "0");
         map.put("lookUp.val.col", "4");
@@ -71,24 +68,5 @@ public class MPHTest {
         assertTrue(lookup.idExists("2020-05-05"));
         assertFalse(lookup.idExists("2025-05-05"));
     }
-
-    @Test
-    void testGetValues() throws Exception {
-        final MPHLookUpService lookup = new MPHLookUpService();
-        lookup.initialize(new HashMap<>());
-        lookup.loadResource(mphResource);
-
-        final Support valueSupport = new SimpleSupport(DefaultSupportTypes.VALUE);
-        valueSupport.addSupport("DNE");
-
-        assertNotEquals(valueSupport, lookup.getValueSupport());
-
-        valueSupport.addSupport("PUBLIC");
-        valueSupport.addSupport("PRIVATE");
-        valueSupport.addSupport("REDACT");
-
-        assertEquals(valueSupport, lookup.getValueSupport());
-    }
-
 
 }

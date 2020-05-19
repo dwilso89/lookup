@@ -21,6 +21,16 @@
 			<artifactId>rapidoid-http-server</artifactId>
 			<version>${rapidoid.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+			<version>4.1.36.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+			<version>1.21</version>
+		</dependency>
 	</dependencies>
 
 </project>

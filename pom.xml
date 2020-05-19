@@ -19,10 +19,10 @@
 		<module>minimum-perfect-hash</module>
 		<module>hadoop</module>
 		<module>paldb</module>
-		<module>dist</module>
-		<module>perf</module>
 		<module>filters</module>
+		<module>perf</module>
 		<module>client</module>
+		<module>dist</module>
 	</modules>
 
 	<dependencyManagement>
