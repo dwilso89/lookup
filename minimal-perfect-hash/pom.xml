@@ -8,7 +8,7 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>lookup-minimum-perfect-hash</artifactId>
+	<artifactId>lookup-minimal-perfect-hash</artifactId>
 	<version>${project.parent.version}</version>
 
 	<dependencies>

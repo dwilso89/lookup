@@ -16,7 +16,7 @@
 
 	<modules>
 		<module>server</module>
-		<module>minimum-perfect-hash</module>
+		<module>minimal-perfect-hash</module>
 		<module>hadoop</module>
 		<module>paldb</module>
 		<module>filters</module>

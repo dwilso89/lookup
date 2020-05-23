@@ -42,7 +42,7 @@
 		</dependency>
 		<dependency>
 			<groupId>dewilson.projects.lookup</groupId>
-			<artifactId>lookup-minimum-perfect-hash</artifactId>
+			<artifactId>lookup-minimal-perfect-hash</artifactId>
 			<version>${parent.version}</version>
 		</dependency>
 	</dependencies>
