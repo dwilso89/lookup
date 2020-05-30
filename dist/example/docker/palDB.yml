@@ -3,9 +3,11 @@ on:
   address: 0.0.0.0
 
 lookUp:
-  serviceType: palDB-1.2.0
-  resource: /opt/lookup/data/GOOG.csv
-  resourceType: csv
+  connector:
+    type: palDB-1.2.0
+    resource:
+      type: csv
+      location: /opt/lookup/data/GOOG.csv
   filter.guavaBloom: true
   key.col: 0
   val.col: 4

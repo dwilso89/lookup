@@ -5,7 +5,9 @@ on:
   address: 0.0.0.0
 
 lookUp:
-  serviceType: hadoop-bloommap-2.10
-  resource: /opt/lookup/data/bloomMapFile.ignore
-  resourceType: dir
+  connector:
+    type: hadoop-bloommap-2.10
+    resource:
+      type: dir
+      location: /opt/lookup/data/bloomMapFile.ignore
   work.dir: /tmp

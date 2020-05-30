@@ -9,7 +9,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>lookup-perf</artifactId>
-	<version>${parent.version}</version>
+	<version>${project.parent.version}</version>
 
 	<dependencies>
 		<dependency>
@@ -21,7 +21,7 @@
 		<dependency>
 			<groupId>dewilson.projects.lookup</groupId>
 			<artifactId>lookup-server</artifactId>
-			<version>${parent.version}</version>
+			<version>${project.parent.version}</version>
 		</dependency>
 		<!-- JMH Testing -->
 		<dependency>

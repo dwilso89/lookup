@@ -1,10 +1,11 @@
 package dewilson.projects.lookup.connector;
 
 import com.google.common.collect.Maps;
-import dewilson.projects.lookup.reader.CSVKVReader;
-import dewilson.projects.lookup.support.DefaultSupportTypes;
-import dewilson.projects.lookup.support.SimpleSupport;
-import dewilson.projects.lookup.support.Support;
+import dewilson.projects.lookup.api.connector.LookUpConnector;
+import dewilson.projects.lookup.api.support.DefaultSupportTypes;
+import dewilson.projects.lookup.api.support.Support;
+import dewilson.projects.lookup.impl.CSVKVReader;
+import dewilson.projects.lookup.impl.SimpleSupport;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.examples.Expander;
 import org.apache.hadoop.conf.Configuration;
@@ -13,7 +14,10 @@ import org.apache.hadoop.io.BloomMapFile;
 import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Text;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 
 import static org.apache.hadoop.fs.CommonConfigurationKeysPublic.IO_MAPFILE_BLOOM_SIZE_KEY;
@@ -156,7 +160,7 @@ public class BloomMapLookUpConnector implements LookUpConnector {
     }
 
     @Override
-    public String getServiceType() {
+    public String getConnectorType() {
         return "hadoop-bloommap-2.10";
     }
 }

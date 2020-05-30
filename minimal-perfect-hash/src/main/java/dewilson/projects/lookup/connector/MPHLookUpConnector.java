@@ -6,10 +6,11 @@ import com.indeed.mph.TableReader;
 import com.indeed.mph.TableWriter;
 import com.indeed.mph.serializers.SmartStringSerializer;
 import com.indeed.util.core.Pair;
-import dewilson.projects.lookup.reader.CSVKVReader;
-import dewilson.projects.lookup.support.DefaultSupportTypes;
-import dewilson.projects.lookup.support.SimpleSupport;
-import dewilson.projects.lookup.support.Support;
+import dewilson.projects.lookup.api.connector.LookUpConnector;
+import dewilson.projects.lookup.api.support.DefaultSupportTypes;
+import dewilson.projects.lookup.api.support.Support;
+import dewilson.projects.lookup.impl.CSVKVReader;
+import dewilson.projects.lookup.impl.SimpleSupport;
 
 import java.io.File;
 import java.io.IOException;
@@ -91,7 +92,7 @@ public class MPHLookUpConnector implements LookUpConnector {
     }
 
     @Override
-    public String getServiceType() {
+    public String getConnectorType() {
         return "mph-1.0.4";
     }
 

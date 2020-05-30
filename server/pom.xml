@@ -13,9 +13,20 @@
 
 	<properties>
 		<rapidoid.version>5.5.5</rapidoid.version>
+		<netty.version>4.1.36.Final</netty.version>
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.2.3</version>
+		</dependency>
+		<dependency>
+			<groupId>dewilson.projects.lookup</groupId>
+			<artifactId>lookup-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.rapidoid</groupId>
 			<artifactId>rapidoid-http-server</artifactId>
@@ -24,12 +35,7 @@
 		<dependency>
 			<groupId>io.netty</groupId>
 			<artifactId>netty-all</artifactId>
-			<version>4.1.36.Final</version>
-		</dependency>
-		<dependency>
-			<groupId>org.yaml</groupId>
-			<artifactId>snakeyaml</artifactId>
-			<version>1.21</version>
+			<version>${netty.version}</version>
 		</dependency>
 	</dependencies>
 

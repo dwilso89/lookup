@@ -3,9 +3,11 @@ on:
   address: 0.0.0.0
 
 lookUp:
-  serviceType: hadoop-bloommap-2.10
-  resource: /opt/lookup/data/GOOG.csv
-  resourceType: csv
+  connector:
+    type: hadoop-bloommap-2.10
+    resource:
+      type: csv
+      location: /opt/lookup/data/GOOG.csv
   work.dir: /tmp
   key.col: 0
   val.col: 4

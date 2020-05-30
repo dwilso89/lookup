@@ -1,6 +1,7 @@
 package dewilson.projects.lookup.server;
 
-import dewilson.projects.lookup.connector.LookUpConnector;
+import dewilson.projects.lookup.api.connector.LookUpConnector;
+import dewilson.projects.lookup.api.connector.LookUpConnectorFactory;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -9,10 +10,8 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ServiceLoader;
 
 class TCPLookUpServer {
 
@@ -20,7 +19,7 @@ class TCPLookUpServer {
         try {
             final Map<String, String> lookUpConf = new HashMap<>();
             lookUpConf.put("port", "8888");
-            lookUpConf.put("lookUp.serviceType", "palDB-1.2.0");
+            lookUpConf.put("lookUp.connector.type", "palDB-1.2.0");
             lookUpConf.put("lookUp.resource", "./data/GOOG.csv");
             lookUpConf.put("lookUp.resourceType", "csv");
             lookUpConf.put("lookUp.work.dir", "../target/");
@@ -31,47 +30,11 @@ class TCPLookUpServer {
             lookUpConf.put("lookUp.val.col", "4");
             lookUpConf.put("lookUp.partition", "true");
             lookUpConf.put("lookUp.partitions", "4");
-            initializeLookUpConnector(lookUpConf);
             final TCPLookUpServer server = new TCPLookUpServer();
-            server.start(lookUpConf, initializeLookUpConnector(lookUpConf));
+            server.start(lookUpConf, LookUpConnectorFactory.getLookUpConnector(lookUpConf));
         } catch (final InterruptedException e) {
             e.printStackTrace();
         }
-    }
-
-    private static LookUpConnector initializeLookUpConnector(final Map<String, String> lookUpConf) {
-        final String type = lookUpConf.get("lookUp.serviceType");
-
-        LookUpConnector lookUpConnector = null;
-
-        for (final LookUpConnector potentialService : ServiceLoader.load(LookUpConnector.class)) {
-            System.out.println("Found service with type " + potentialService.getServiceType());
-            if (potentialService.getServiceType().trim().equalsIgnoreCase(type)) {
-                lookUpConnector = potentialService;
-                break;
-            }
-        }
-
-        if (lookUpConnector == null) {
-            throw new RuntimeException("Could not find service " + type);
-        }
-
-        long start = System.currentTimeMillis();
-        lookUpConnector.initialize(lookUpConf);
-        System.out.println(String.format("Initialization finished in [%d]ms", System.currentTimeMillis() - start));
-
-        start = System.currentTimeMillis();
-        final Object resource = lookUpConf.get("lookUp.resource");
-        if (resource != null) {
-            try {
-                lookUpConnector.loadResource(resource.toString());
-            } catch (final IOException ioe) {
-                throw new RuntimeException("Could not load resource [" + resource + "] with service [" + type + "]", ioe);
-            }
-        }
-        System.out.println(String.format("Resource loading finished in [%d]ms", System.currentTimeMillis() - start));
-
-        return lookUpConnector;
     }
 
     private LookUpConnector lookUpConnector;

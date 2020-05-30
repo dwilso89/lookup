@@ -1,18 +1,19 @@
 package dewilson.projects.lookup.connector;
 
+import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.linkedin.paldb.api.PalDB;
 import com.linkedin.paldb.api.StoreReader;
 import com.linkedin.paldb.api.StoreWriter;
-import dewilso.projects.lookup.filter.BloomFilter;
-import dewilso.projects.lookup.filter.GuavaBloomFilter;
-import dewilso.projects.lookup.filter.ScalaBloomFilter;
-import dewilson.projects.lookup.reader.CSVKVReader;
-import dewilson.projects.lookup.reader.KVReader;
-import dewilson.projects.lookup.support.DefaultSupportTypes;
-import dewilson.projects.lookup.support.SimpleSupport;
-import dewilson.projects.lookup.support.Support;
+import dewilson.projects.lookup.api.connector.LookUpConnector;
+import dewilson.projects.lookup.api.support.DefaultSupportTypes;
+import dewilson.projects.lookup.api.support.Support;
+import dewilson.projects.lookup.filter.api.ApproximateMembershipFilter;
+import dewilson.projects.lookup.filter.impl.GuavaApproximateMembershipFilter;
+import dewilson.projects.lookup.filter.impl.ScalaApproximateMembershipFilter;
+import dewilson.projects.lookup.impl.CSVKVReader;
+import dewilson.projects.lookup.impl.SimpleSupport;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -30,7 +31,7 @@ public class PalDBLookUpConnector implements LookUpConnector {
     private final List<StoreReader> readers;
     private StoreReader reader;
     private Map<String, File> filterFiles;
-    private BloomFilter<String> activeBloomFilter;
+    private ApproximateMembershipFilter activeApproximateMembershipFilter;
 
     private String workDir = "/tmp";
     private String activeFilterType = "";
@@ -62,7 +63,8 @@ public class PalDBLookUpConnector implements LookUpConnector {
     @Override
     public boolean idExists(final String id) {
         long start = System.currentTimeMillis();
-        if (this.activeBloomFilter == null || this.activeBloomFilter.probablyExists(id)) {
+        if (this.activeApproximateMembershipFilter == null ||
+                this.activeApproximateMembershipFilter.probablyExists(id.getBytes(Charsets.UTF_8))) {
             return !getValue(id).equals("DNE");
         }
         this.guavaBloomTime.getAndAdd(System.currentTimeMillis() - start);
@@ -72,7 +74,8 @@ public class PalDBLookUpConnector implements LookUpConnector {
 
     @Override
     public String getValue(final String id) {
-        if (this.activeBloomFilter == null || this.activeBloomFilter.probablyExists(id)) {
+        if (this.activeApproximateMembershipFilter == null ||
+                this.activeApproximateMembershipFilter.probablyExists(id.getBytes(Charsets.UTF_8))) {
             final Object value;
             if (this.partition) {
                 final StoreReader reader = this.readers.get(Math.abs(id.hashCode() % this.partitions));
@@ -109,24 +112,26 @@ public class PalDBLookUpConnector implements LookUpConnector {
 
     @Override
     public void loadResource(final String resource) throws IOException {
-        final String resourceType = this.config.getOrDefault("lookUp.resourceType", "palDB");
+        final String resourceType = this.config.getOrDefault("lookUp.connector.resource.type", "palDB");
 
         switch (resourceType) {
             case "palDB":
                 this.reader = PalDB.createReader(new File(resource));
                 if (this.guavaFilter) {
                     System.out.println(String.format("Creating filter [%s]", "guavaBloom"));
-                    final BloomFilter<String> bloomFilter = new GuavaBloomFilter.Builder()
+                    final ApproximateMembershipFilter approximateMembershipFilter = new GuavaApproximateMembershipFilter.Builder()
                             .elements(
-                                    StreamSupport.stream(this.reader.keys().spliterator(), false))
+                                    StreamSupport.stream(this.reader.keys().spliterator(), false)
+                                            .map(str -> str.toString().getBytes(Charsets.UTF_8))
+                            )
                             .build();
                     this.filterSupport.addSupport("guavaBloom");
                     final File guavaBloomFile = new File(this.workDir + "/" + "guavaBloom");
                     this.filterFiles.put("guavaBloom", guavaBloomFile);
-                    bloomFilter.write(new BufferedOutputStream(new FileOutputStream(guavaBloomFile)));
+                    approximateMembershipFilter.write(new BufferedOutputStream(new FileOutputStream(guavaBloomFile)));
                     this.filterFiles.put("guavaBloom", guavaBloomFile);
                     if (this.activeFilterType.equals("guavaBloom")) {
-                        this.activeBloomFilter = bloomFilter;
+                        this.activeApproximateMembershipFilter = approximateMembershipFilter;
                     }
                 }
                 break;
@@ -167,33 +172,33 @@ public class PalDBLookUpConnector implements LookUpConnector {
 
                 if (this.guavaFilter) {
                     System.out.println(String.format("Creating filter [%s]", "guavaBloom"));
-                    final BloomFilter<String> bloomFilter = new GuavaBloomFilter.Builder()
+                    final ApproximateMembershipFilter approximateMembershipFilter = new GuavaApproximateMembershipFilter.Builder()
                             .elements(new CSVKVReader().initialize(resource, this.config)
-                                    .getKVStream().map(KVReader.Pair::getKey))
+                                    .getKVStream().map(pair -> pair.getKey().getBytes(Charsets.UTF_8)))
                             .build();
                     this.filterSupport.addSupport("guavaBloom");
                     final File guavaBloomFile = new File(this.workDir + "/" + "guavaBloom");
-                    bloomFilter.write(new BufferedOutputStream(new FileOutputStream(guavaBloomFile)));
+                    approximateMembershipFilter.write(new BufferedOutputStream(new FileOutputStream(guavaBloomFile)));
                     this.filterFiles.put("guavaBloom", guavaBloomFile);
                     if (this.activeFilterType.equals("guavaBloom")) {
                         System.out.println(String.format("Setting active filter to filter [%s]", "guavaBloom"));
-                        this.activeBloomFilter = bloomFilter;
+                        this.activeApproximateMembershipFilter = approximateMembershipFilter;
                     }
                 }
 
                 if (this.scalaFilter) {
                     System.out.println(String.format("Creating filter [%s]", "scalaBloom"));
-                    final BloomFilter<String> bloomFilter = new ScalaBloomFilter.Builder()
+                    final ApproximateMembershipFilter approximateMembershipFilter = new ScalaApproximateMembershipFilter.Builder()
                             .elements(new CSVKVReader().initialize(resource, this.config)
-                                    .getKVStream().map(KVReader.Pair::getKey))
+                                    .getKVStream().map(pair -> pair.getKey().getBytes(Charsets.UTF_8)))
                             .build();
                     this.filterSupport.addSupport("scalaBloom");
                     final File scalaBloomFile = new File(this.workDir + "/" + "scalaBloom");
-                    bloomFilter.write(new BufferedOutputStream(new FileOutputStream(scalaBloomFile)));
+                    approximateMembershipFilter.write(new BufferedOutputStream(new FileOutputStream(scalaBloomFile)));
                     this.filterFiles.put("scalaBloom", scalaBloomFile);
                     if (this.activeFilterType.equals("scalaBloom")) {
                         System.out.println(String.format("Setting active filter to filter [%s]", "scalaBloom"));
-                        this.activeBloomFilter = bloomFilter;
+                        this.activeApproximateMembershipFilter = approximateMembershipFilter;
                     }
                 }
 
@@ -205,7 +210,7 @@ public class PalDBLookUpConnector implements LookUpConnector {
     }
 
     @Override
-    public String getServiceType() {
+    public String getConnectorType() {
         return "palDB-1.2.0";
     }
 

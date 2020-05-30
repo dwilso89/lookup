@@ -3,5 +3,5 @@ on:
   address: 0.0.0.0
 
 lookUp:
-  serviceType: simple
-  resource: ./data/bigCSV.ignore/bigfile.csv
+  connector.type: simple
+  connector.resource: ./data/bigCSV.ignore/bigfile.csv

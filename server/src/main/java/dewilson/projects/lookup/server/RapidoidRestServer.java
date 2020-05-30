@@ -2,21 +2,19 @@ package dewilson.projects.lookup.server;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dewilson.projects.lookup.connector.LookUpConnector;
+import dewilson.projects.lookup.api.connector.LookUpConnector;
+import dewilson.projects.lookup.api.connector.LookUpConnectorFactory;
 import org.rapidoid.config.Conf;
 import org.rapidoid.config.Config;
 import org.rapidoid.setup.App;
 import org.rapidoid.setup.My;
 import org.rapidoid.setup.On;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.ServiceLoader;
 
 public class RapidoidRestServer {
 
-    private static LookUpConnector lookUpConnector;
     private static int CHUNK_TRANSFER_SIZE = 256 * 1024;
 
     public static void main(final String[] args) {
@@ -30,7 +28,7 @@ public class RapidoidRestServer {
 
         // configure LookUp service...
         final Config lookUpConf = Conf.section("lookUp");
-        initializeLookUpConnector(lookUpConf);
+        final LookUpConnector lookUpConnector = LookUpConnectorFactory.getLookUpConnector(lookUpConf.toFlatMap());
 
         // handle errors...
         My.errorHandler((req, resp, error) -> resp.code(500).result("Error handling request"));
@@ -60,38 +58,6 @@ public class RapidoidRestServer {
             }
             return resp.done();
         });
-
-    }
-
-    private static void initializeLookUpConnector(final Config lookUpConf) {
-        final String type = lookUpConf.get("serviceType").toString();
-
-        for (final LookUpConnector potentialService : ServiceLoader.load(LookUpConnector.class)) {
-            System.out.println("Found service with type " + potentialService.getServiceType());
-            if (potentialService.getServiceType().trim().equalsIgnoreCase(type)) {
-                lookUpConnector = potentialService;
-                break;
-            }
-        }
-
-        if(lookUpConnector == null){
-            throw new RuntimeException("Could not find service " + type);
-        }
-
-        long start = System.currentTimeMillis();
-        lookUpConnector.initialize(lookUpConf.toFlatMap());
-        System.out.println(String.format("Initialization finished in [%d]ms", System.currentTimeMillis() - start));
-
-        start = System.currentTimeMillis();
-        final Object resource = lookUpConf.get("resource");
-        if (resource != null) {
-            try {
-                lookUpConnector.loadResource(resource.toString());
-            } catch (final IOException ioe) {
-                throw new RuntimeException("Could not load resource [" + resource + "] with service [" + type + "]", ioe);
-            }
-        }
-        System.out.println(String.format("Resource loading finished in [%d]ms", System.currentTimeMillis() - start));
 
     }
 

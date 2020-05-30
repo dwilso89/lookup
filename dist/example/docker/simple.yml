@@ -3,5 +3,5 @@ on:
   address: 0.0.0.0
 
 lookUp:
-  serviceType: simple
-  resource: /opt/lookup/data/simple.csv
+  connector.type: simple
+  connector.resource: /opt/lookup/data/simple.csv

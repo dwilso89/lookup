@@ -10,7 +10,7 @@
 	<packaging>pom</packaging>
 
 	<artifactId>lookup-dist</artifactId>
-	<version>${parent.version}</version>
+	<version>${project.parent.version}</version>
 
 	<properties>
 		<dockerfile.maven.version>1.4.10</dockerfile.maven.version>
@@ -22,28 +22,33 @@
 	<dependencies>
 		<dependency>
 			<groupId>dewilson.projects.lookup</groupId>
+			<artifactId>lookup-api</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>dewilson.projects.lookup</groupId>
 			<artifactId>lookup-server</artifactId>
-			<version>${parent.version}</version>
+			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>dewilson.projects.lookup</groupId>
 			<artifactId>lookup-hadoop</artifactId>
-			<version>${parent.version}</version>
+			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>dewilson.projects.lookup</groupId>
 			<artifactId>lookup-paldb</artifactId>
-			<version>${parent.version}</version>
+			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>dewilson.projects.lookup</groupId>
 			<artifactId>lookup-filters</artifactId>
-			<version>${parent.version}</version>
+			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>dewilson.projects.lookup</groupId>
 			<artifactId>lookup-minimal-perfect-hash</artifactId>
-			<version>${parent.version}</version>
+			<version>${project.parent.version}</version>
 		</dependency>
 	</dependencies>
 

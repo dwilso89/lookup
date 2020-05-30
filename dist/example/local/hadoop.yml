@@ -3,9 +3,9 @@ on:
   address: 0.0.0.0
 
 lookUp:
-  serviceType: hadoop-bloommap-2.10
-  resource: ./data/GOOG.csv
-  resourceType: csv
+  connector.type: hadoop-bloommap-2.10
+  connector.resource: ./data/GOOG.csv
+  connector.resource.type: csv
   work.dir: ../target/
   key.col: 0
   val.col: 4
