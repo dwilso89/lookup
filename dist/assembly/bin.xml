@@ -6,20 +6,13 @@
 		<format>tgz</format>
 	</formats>
 	<includeBaseDirectory>false</includeBaseDirectory>
+	<!-- SHADE ARTIFACTS AND MOVE TO LIB WITH NO TRANSITIVE -->
+	<!-- CREATE BIN SCRIPT TO START SERVER(S) WITH ENTRYPOINT -->
 	<dependencySets>
 		<dependencySet>
 			<useProjectArtifact>true</useProjectArtifact>
-			<useTransitiveDependencies>true</useTransitiveDependencies>
-			<outputDirectory>lib</outputDirectory>
-			<unpack>false</unpack>
-			<excludes>
-				<exclude>${project.groupId}:*:*</exclude>
-			</excludes>
-		</dependencySet>
-		<dependencySet>
-			<useProjectArtifact>true</useProjectArtifact>
 			<useTransitiveDependencies>false</useTransitiveDependencies>
-			<outputDirectory>bin</outputDirectory>
+			<outputDirectory>lib</outputDirectory>
 			<unpack>false</unpack>
 		</dependencySet>
 	</dependencySets>

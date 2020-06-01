@@ -2,14 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<parent>
-		<artifactId>lookup-parent</artifactId>
+		<artifactId>parent</artifactId>
 		<groupId>dewilson.projects.lookup</groupId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<packaging>pom</packaging>
 
-	<artifactId>lookup-dist</artifactId>
+	<artifactId>dist</artifactId>
 	<version>${project.parent.version}</version>
 
 	<properties>
@@ -22,32 +22,32 @@
 	<dependencies>
 		<dependency>
 			<groupId>dewilson.projects.lookup</groupId>
-			<artifactId>lookup-api</artifactId>
+			<artifactId>connectors</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>dewilson.projects.lookup</groupId>
-			<artifactId>lookup-server</artifactId>
+			<artifactId>server</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>dewilson.projects.lookup</groupId>
-			<artifactId>lookup-hadoop</artifactId>
+			<artifactId>hadoop</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>dewilson.projects.lookup</groupId>
-			<artifactId>lookup-paldb</artifactId>
+			<artifactId>paldb</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>dewilson.projects.lookup</groupId>
-			<artifactId>lookup-filters</artifactId>
+			<artifactId>filters</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>dewilson.projects.lookup</groupId>
-			<artifactId>lookup-minimal-perfect-hash</artifactId>
+			<artifactId>minimal-perfect-hash</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 	</dependencies>

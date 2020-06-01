@@ -1,6 +1,7 @@
 package dewilson.projects.lookup.connector;
 
 import com.google.common.collect.Maps;
+import dewilson.projects.lookup.api.connector.LookUpConnector;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.BloomMapFile;
 import org.apache.hadoop.io.IOUtils;

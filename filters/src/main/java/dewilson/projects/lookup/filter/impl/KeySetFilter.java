@@ -14,6 +14,10 @@ public class KeySetFilter implements MembershipFilter<String> {
         this.keySet = new HashSet<>();
     }
 
+    public void addKeyToFilter(final String key) {
+        this.keySet.add(key);
+    }
+
     @Override
     public boolean contains(final String key) {
         return this.keySet.contains(key);

@@ -1,7 +1,5 @@
 package dewilson.projects.lookup.server;
 
-import dewilson.projects.lookup.api.connector.LookUpConnector;
-import dewilson.projects.lookup.api.connector.LookUpConnectorFactory;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -9,11 +7,19 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import dewilson.projects.lookup.api.connector.LookUpConnector;
+import dewilson.projects.lookup.api.connector.LookUpConnectorFactory;
+
 
 import java.util.HashMap;
 import java.util.Map;
 
 class TCPLookUpServer {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(TCPLookUpServer.class);
 
     public static void main(final String[] args) {
         try {
@@ -42,7 +48,7 @@ class TCPLookUpServer {
     void start(final Map<String, String> config, final LookUpConnector lookUpConnector) throws InterruptedException {
         this.lookUpConnector = lookUpConnector;
         final int port = Integer.parseInt(config.get("port"));
-        System.out.println("Starting server at: " + port);
+        LOG.info("Starting server at [{}]", port);
         final EventLoopGroup bossGroup = new NioEventLoopGroup();
         final EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
@@ -53,10 +59,10 @@ class TCPLookUpServer {
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
 
             final ChannelFuture f = b.bind(port).sync();
-            if (f.isSuccess()) System.out.println("Server started successfully");
+            if (f.isSuccess()) LOG.info("Server started successfully");
             f.channel().closeFuture().sync();
         } finally {
-            System.out.println("Stopping server");
+            LOG.info("Stopping server");
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();
         }
@@ -75,7 +81,7 @@ class TCPLookUpServer {
 
         @Override
         public void channelActive(final ChannelHandlerContext ctx) {
-            System.out.println(String.format("< %s > : Channel Active", ctx.channel().remoteAddress()));
+            LOG.info("Channel Active: [{}]", ctx.channel().remoteAddress());
         }
 
         @Override
@@ -86,7 +92,7 @@ class TCPLookUpServer {
 
         @Override
         public void channelInactive(final ChannelHandlerContext ctx) {
-            System.out.println(String.format("< %s > : Channel Inactive", ctx.channel().remoteAddress()));
+            LOG.info(String.format("Channel Inactive: [{}]", ctx.channel().remoteAddress()));
         }
     }
 

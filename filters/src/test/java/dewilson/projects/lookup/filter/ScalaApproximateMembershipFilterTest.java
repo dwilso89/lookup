@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import bloomfilter.CanGenerateHashFrom;
 import bloomfilter.mutable.BloomFilter;
 import com.google.common.base.Charsets;
+import com.google.common.primitives.Longs;
 import dewilson.projects.lookup.filter.impl.ScalaApproximateMembershipFilter;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -37,16 +38,18 @@ class ScalaApproximateMembershipFilterTest {
     @Disabled
     @Test
     void generateGiantBloomFilter() throws IOException {
-        final bloomfilter.mutable.BloomFilter bf = BloomFilter.apply(
-                1000000000,
-                0.05F,
-                CanGenerateHashFrom.CanGenerateHashFromLong$.MODULE$);
+        final ScalaApproximateMembershipFilter bf = new ScalaApproximateMembershipFilter.Builder()
+                .expectedElements(1000000000L)
+                .elements(LongStream.range(0L, 1000000000L).mapToObj(Longs::toByteArray))
+                .build();
 
-        LongStream.range(0L, 1000000000L).forEach(bf::add);
-
-        try (final FileOutputStream fos = new FileOutputStream(new File("testFile.bf"))) {
-            bf.writeTo(fos);
+        // TODO make windows friendly tmp location
+        final File outputFile = new File("/tmp/filters/testScalaFile.apmf");
+        outputFile.getParentFile().mkdir();
+        try (final FileOutputStream fos = new FileOutputStream(outputFile)) {
+            bf.write(fos);
         }
+
     }
 
 }

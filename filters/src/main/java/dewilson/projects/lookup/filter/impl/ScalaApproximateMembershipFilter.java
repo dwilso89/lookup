@@ -39,7 +39,7 @@ public class ScalaApproximateMembershipFilter implements ApproximateMembershipFi
 
     public static class Builder {
 
-        private double errorRate = .01;
+        private double errorRate = 0.005F;
         private long expectedElements = 1000000;
         private Stream<byte[]> elements;
 

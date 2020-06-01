@@ -1,6 +1,5 @@
 package dewilson.projects.lookup.api.connector;
 
-
 import dewilson.projects.lookup.api.support.Support;
 
 import java.io.IOException;

@@ -1,8 +1,8 @@
 package dewilson.projects.lookup.jmh;
 
 import com.google.common.collect.Maps;
+import dewilson.projects.lookup.api.connector.LookUpConnector;
 import dewilson.projects.lookup.connector.BloomMapLookUpConnector;
-import dewilson.projects.lookup.connector.LookUpConnector;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;

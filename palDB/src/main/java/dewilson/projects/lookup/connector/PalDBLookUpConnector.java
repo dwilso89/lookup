@@ -14,6 +14,8 @@ import dewilson.projects.lookup.filter.impl.GuavaApproximateMembershipFilter;
 import dewilson.projects.lookup.filter.impl.ScalaApproximateMembershipFilter;
 import dewilson.projects.lookup.impl.CSVKVReader;
 import dewilson.projects.lookup.impl.SimpleSupport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -25,6 +27,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.StreamSupport;
 
 public class PalDBLookUpConnector implements LookUpConnector {
+
+    private static final Logger LOG = LoggerFactory.getLogger(PalDBLookUpConnector.class);
 
     private final Support filterSupport;
     private final Map<String, String> config;
@@ -118,7 +122,7 @@ public class PalDBLookUpConnector implements LookUpConnector {
             case "palDB":
                 this.reader = PalDB.createReader(new File(resource));
                 if (this.guavaFilter) {
-                    System.out.println(String.format("Creating filter [%s]", "guavaBloom"));
+                    LOG.info("Creating filter [{}]", "guavaBloom");
                     final ApproximateMembershipFilter approximateMembershipFilter = new GuavaApproximateMembershipFilter.Builder()
                             .elements(
                                     StreamSupport.stream(this.reader.keys().spliterator(), false)
@@ -171,7 +175,7 @@ public class PalDBLookUpConnector implements LookUpConnector {
                 }
 
                 if (this.guavaFilter) {
-                    System.out.println(String.format("Creating filter [%s]", "guavaBloom"));
+                    LOG.info("Creating filter [{}]", "guavaBloom");
                     final ApproximateMembershipFilter approximateMembershipFilter = new GuavaApproximateMembershipFilter.Builder()
                             .elements(new CSVKVReader().initialize(resource, this.config)
                                     .getKVStream().map(pair -> pair.getKey().getBytes(Charsets.UTF_8)))
@@ -181,13 +185,13 @@ public class PalDBLookUpConnector implements LookUpConnector {
                     approximateMembershipFilter.write(new BufferedOutputStream(new FileOutputStream(guavaBloomFile)));
                     this.filterFiles.put("guavaBloom", guavaBloomFile);
                     if (this.activeFilterType.equals("guavaBloom")) {
-                        System.out.println(String.format("Setting active filter to filter [%s]", "guavaBloom"));
+                        LOG.info("Setting active filter to filter [{}]", "guavaBloom");
                         this.activeApproximateMembershipFilter = approximateMembershipFilter;
                     }
                 }
 
                 if (this.scalaFilter) {
-                    System.out.println(String.format("Creating filter [%s]", "scalaBloom"));
+                    LOG.info("Creating filter [{}]", "scalaBloom");
                     final ApproximateMembershipFilter approximateMembershipFilter = new ScalaApproximateMembershipFilter.Builder()
                             .elements(new CSVKVReader().initialize(resource, this.config)
                                     .getKVStream().map(pair -> pair.getKey().getBytes(Charsets.UTF_8)))
@@ -197,7 +201,7 @@ public class PalDBLookUpConnector implements LookUpConnector {
                     approximateMembershipFilter.write(new BufferedOutputStream(new FileOutputStream(scalaBloomFile)));
                     this.filterFiles.put("scalaBloom", scalaBloomFile);
                     if (this.activeFilterType.equals("scalaBloom")) {
-                        System.out.println(String.format("Setting active filter to filter [%s]", "scalaBloom"));
+                        LOG.info("Setting active filter to filter [{}]", "scalaBloom");
                         this.activeApproximateMembershipFilter = approximateMembershipFilter;
                     }
                 }

@@ -9,7 +9,7 @@ import java.util.ServiceLoader;
 
 public class LookUpConnectorFactory {
 
-    public static final Logger LOG = LoggerFactory.getLogger(LookUpConnectorFactory.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LookUpConnectorFactory.class);
 
     private LookUpConnectorFactory() {
         // empty on purpose

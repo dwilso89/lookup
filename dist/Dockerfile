@@ -4,4 +4,4 @@ ARG TGZ_FILE
 
 ADD $TGZ_FILE /opt/lookup
 
-ENTRYPOINT ["java", "-cp", "/opt/lookup/bin/*:/opt/lookup/lib/*:/opt/lookup/conf/", "dewilson.projects.lookup.server.RapidoidRestServer", "config=config", "mode=PRODUCTION"]
+ENTRYPOINT ["java", "-cp", "/opt/lookup/lib/*:/opt/lookup/conf/", "dewilson.projects.lookup.server.RapidoidRestServer", "config=config", "mode=PRODUCTION"]
