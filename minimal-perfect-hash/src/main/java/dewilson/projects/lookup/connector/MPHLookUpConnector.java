@@ -24,7 +24,6 @@ public class MPHLookUpConnector implements LookUpConnector {
     private final Map<String, String> config;
     private TableReader<String, String> reader;
 
-
     public MPHLookUpConnector() {
         this.filterSupport = new SimpleSupport(DefaultSupportTypes.FILTER);
         this.config = Maps.newHashMap();
@@ -65,7 +64,7 @@ public class MPHLookUpConnector implements LookUpConnector {
 
     @Override
     public void loadResource(final String resource) throws IOException {
-        final String resourceType = this.config.getOrDefault("lookUp.resourceType", "mph");
+        final String resourceType = this.config.getOrDefault("lookUp.connector.resource.type", "mph");
 
         final String mphFile;
         switch (resourceType) {

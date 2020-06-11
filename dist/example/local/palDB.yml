@@ -9,9 +9,8 @@ lookUp:
       type: csv
       location: ./data/GOOG.csv
   work.dir: ../target/
-  filter.guavaBloom: true
-  filter.scalaBloom: true
-  filter.activeType: scalaBloom
+  filters: guava,scala,hadoop
+  filter.active.type: guava
   key.col: 0
   val.col: 4
   partition: true

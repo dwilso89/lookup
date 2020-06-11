@@ -44,7 +44,7 @@ public class BloomMapFileTest {
         map.put("lookUp.key.col", "0");
         map.put("lookUp.val.col", "4");
         map.put("lookUp.work.dir", tempDir.toString() + "/bloomBig");
-        map.put("lookUp.resourceType", "csv");
+        map.put("lookUp.connector.resource.type", "csv");
         lookup.initialize(map);
         lookup.loadResource("src/test/resources/GOOG_2020.csv");
 
@@ -61,7 +61,7 @@ public class BloomMapFileTest {
     @Test
     void testGetValue() throws Exception {
         final BloomMapLookUpConnector lookup = new BloomMapLookUpConnector();
-        lookup.initialize(Map.of("lookUp.resourceType", "dir"));
+        lookup.initialize(Map.of("lookUp.connector.resource.type", "dir"));
         lookup.loadResource(bloomMapFileResource);
 
         assertEquals(lookup.getValue("a"), "PUBLIC");
@@ -76,7 +76,7 @@ public class BloomMapFileTest {
     @Test
     void testGetFilter() throws Exception {
         final BloomMapLookUpConnector lookup = new BloomMapLookUpConnector();
-        lookup.initialize(Map.of("lookUp.resourceType", "dir"));
+        lookup.initialize(Map.of("lookUp.connector.resource.type", "dir"));
         lookup.loadResource(bloomMapFileResource);
 
         final byte[] originalDynamicBloomFilter = IOUtils.readFullyToByteArray(

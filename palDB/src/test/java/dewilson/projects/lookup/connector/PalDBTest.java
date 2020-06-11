@@ -3,6 +3,7 @@ package dewilson.projects.lookup.connector;
 import com.google.common.collect.Maps;
 import com.linkedin.paldb.api.PalDB;
 import com.linkedin.paldb.api.StoreWriter;
+import dewilson.projects.lookup.api.connector.LookUpConnector;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -53,7 +54,7 @@ class PalDBTest {
         map.put("lookUp.key.col", "0");
         map.put("lookUp.val.col", "4");
         map.put("lookUp.work.dir", tempDir.toString() + "/csv");
-        map.put("lookUp.resourceType", "csv");
+        map.put("lookUp.connector.resource.type", "csv");
         lookup.initialize(map);
         lookup.loadResource("src/test/resources/GOOG_2020.csv");
 

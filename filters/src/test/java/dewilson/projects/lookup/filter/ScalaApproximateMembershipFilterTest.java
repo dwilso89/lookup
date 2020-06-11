@@ -1,9 +1,5 @@
 package dewilson.projects.lookup.filter;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import bloomfilter.CanGenerateHashFrom;
-import bloomfilter.mutable.BloomFilter;
 import com.google.common.base.Charsets;
 import com.google.common.primitives.Longs;
 import dewilson.projects.lookup.filter.impl.ScalaApproximateMembershipFilter;
@@ -15,6 +11,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.stream.LongStream;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ScalaApproximateMembershipFilterTest {
 

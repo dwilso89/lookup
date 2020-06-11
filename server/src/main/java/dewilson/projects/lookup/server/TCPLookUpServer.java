@@ -1,5 +1,7 @@
 package dewilson.projects.lookup.server;
 
+import dewilson.projects.lookup.api.connector.LookUpConnector;
+import dewilson.projects.lookup.api.connector.LookUpConnectorFactory;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -9,10 +11,6 @@ import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import dewilson.projects.lookup.api.connector.LookUpConnector;
-import dewilson.projects.lookup.api.connector.LookUpConnectorFactory;
-
 
 import java.util.HashMap;
 import java.util.Map;

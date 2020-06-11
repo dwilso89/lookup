@@ -5,6 +5,7 @@ import com.indeed.mph.TableConfig;
 import com.indeed.mph.TableWriter;
 import com.indeed.mph.serializers.SmartStringSerializer;
 import com.indeed.util.core.Pair;
+import dewilson.projects.lookup.api.connector.LookUpConnector;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;

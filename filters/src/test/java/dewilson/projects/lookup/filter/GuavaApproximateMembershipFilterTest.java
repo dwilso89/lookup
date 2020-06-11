@@ -1,10 +1,8 @@
 package dewilson.projects.lookup.filter;
 
 import com.google.common.base.Charsets;
-import com.google.common.hash.Funnels;
 import com.google.common.primitives.Longs;
 import dewilson.projects.lookup.filter.impl.GuavaApproximateMembershipFilter;
-import dewilson.projects.lookup.filter.impl.ScalaApproximateMembershipFilter;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 

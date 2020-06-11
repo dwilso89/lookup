@@ -19,6 +19,7 @@
 			<groupId>dewilson.projects.lookup</groupId>
 			<artifactId>filters</artifactId>
 			<version>${project.parent.version}</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents.client5</groupId>

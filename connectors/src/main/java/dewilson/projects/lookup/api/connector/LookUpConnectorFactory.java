@@ -18,7 +18,7 @@ public class LookUpConnectorFactory {
     public static LookUpConnector getLookUpConnector(final Map<String, String> configuration) {
 
         LOG.debug("Configuration: ");
-        configuration.entrySet().forEach(entry -> LOG.debug("Key: {}  Value: ", entry.getKey(), entry.getValue()));
+        configuration.entrySet().forEach(entry -> LOG.debug("Key: {}  Value: {}", entry.getKey(), entry.getValue()));
 
         final String type = configuration.get("lookUp.connector.type");
 
@@ -29,7 +29,7 @@ public class LookUpConnectorFactory {
         LOG.info("Initialization finished in [{}]ms", System.currentTimeMillis() - start);
 
         start = System.currentTimeMillis();
-        final Object resource = configuration.get("lookUp.connector.resource");
+        final Object resource = configuration.get("lookUp.connector.resource.location");
         if (resource != null) {
             try {
                 lookUpConnector.loadResource(resource.toString());

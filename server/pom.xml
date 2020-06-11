@@ -27,6 +27,7 @@
 			<groupId>dewilson.projects.lookup</groupId>
 			<artifactId>connectors</artifactId>
 			<version>${project.parent.version}</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.rapidoid</groupId>
@@ -39,5 +40,58 @@
 			<version>${netty.version}</version>
 		</dependency>
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.2.3</version>
+				<executions>
+					<execution>
+						<id>shade</id>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<filters>
+								<filter>
+									<artifact>*:*</artifact>
+									<excludes>
+										<exclude>META-INF/*.SF</exclude>
+										<exclude>META-INF/*.DSA</exclude>
+										<exclude>META-INF/*.RSA</exclude>
+									</excludes>
+								</filter>
+							</filters>
+							<transformers>
+								<transformer
+										implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+							</transformers>
+							<relocations>
+								<relocation>
+									<pattern>com</pattern>
+									<shadedPattern>private.server.com</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>org.codehaus</pattern>
+									<shadedPattern>private.server.org.codehaus</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>org.rapidoid</pattern>
+									<shadedPattern>private.server.org.rapidoid</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>io.netty</pattern>
+									<shadedPattern>private.server.io.netty</shadedPattern>
+								</relocation>
+							</relocations>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

@@ -10,26 +10,86 @@
 
 	<artifactId>filters</artifactId>
 
+	<properties>
+		<guava.version>29.0-jre</guava.version>
+		<scala.bloom.version>0.13.1</scala.bloom.version>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>29.0-jre</version>
+			<version>${guava.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.alexandrnikitin</groupId>
 			<artifactId>bloom-filter_2.11</artifactId>
-			<version>0.13.1</version>
+			<version>${scala.bloom.version}</version>
 		</dependency>
 		<!-- Test dependencies -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.2.3</version>
+				<executions>
+					<execution>
+						<id>shade</id>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<filters>
+								<filter>
+									<artifact>*:*</artifact>
+									<excludes>
+										<exclude>META-INF/*.SF</exclude>
+										<exclude>META-INF/*.DSA</exclude>
+										<exclude>META-INF/*.RSA</exclude>
+									</excludes>
+								</filter>
+							</filters>
+							<transformers>
+								<transformer
+										implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+							</transformers>
+							<relocations>
+								<relocation>
+									<pattern>com</pattern>
+									<shadedPattern>private.filters.com</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>org.checkerframework</pattern>
+									<shadedPattern>private.filters.org.checkerframework</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>org.scala-lang</pattern>
+									<shadedPattern>private.filters.org.scala-lang</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>bloomfilter</pattern>
+									<shadedPattern>private.filters.bloomfilter</shadedPattern>
+								</relocation>
+							</relocations>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

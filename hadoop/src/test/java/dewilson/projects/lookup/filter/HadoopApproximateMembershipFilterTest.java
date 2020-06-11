@@ -1,15 +1,13 @@
 package dewilson.projects.lookup.filter;
 
-import bloomfilter.CanGenerateHashFrom;
-import bloomfilter.mutable.BloomFilter;
 import com.google.common.base.Charsets;
 import com.google.common.primitives.Longs;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
@@ -33,6 +31,7 @@ class HadoopApproximateMembershipFilterTest {
         assertTrue(filter.probablyExists("d".getBytes(Charsets.UTF_8)));
     }
 
+    @Disabled
     @Test
     void generateGiantBloomFilter() throws IOException {
         final HadoopApproximateMembershipFilter bf = new HadoopApproximateMembershipFilter.Builder()

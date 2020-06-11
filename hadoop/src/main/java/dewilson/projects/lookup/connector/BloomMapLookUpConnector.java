@@ -88,7 +88,7 @@ public class BloomMapLookUpConnector implements LookUpConnector {
 
     @Override
     public void loadResource(final String resource) throws IOException {
-        final String resourceType = this.conf.get("lookUp.resourceType", "tgz");
+        final String resourceType = this.conf.get("lookUp.connector.resource.type", "tgz");
 
         final Path path;
         switch (resourceType) {
