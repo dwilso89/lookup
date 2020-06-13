@@ -24,12 +24,11 @@ class TCPLookUpServer {
             final Map<String, String> lookUpConf = new HashMap<>();
             lookUpConf.put("port", "8888");
             lookUpConf.put("lookUp.connector.type", "palDB-1.2.0");
-            lookUpConf.put("lookUp.resource", "./data/GOOG.csv");
-            lookUpConf.put("lookUp.resourceType", "csv");
+            lookUpConf.put("lookUp.connector.resource", "./data/GOOG.csv");
+            lookUpConf.put("lookUp.connector.resource.type", "csv");
             lookUpConf.put("lookUp.work.dir", "../target/");
-            lookUpConf.put("lookUp.filter.guavaBloom", " true");
-            lookUpConf.put("lookUp.filter.scalaBloom", "true");
-            lookUpConf.put("lookUp.filter.activeType", "scalaBloom");
+            lookUpConf.put("lookUp.filters", " scala,guava-29.0,hadoop-2.10");
+            lookUpConf.put("lookUp.filter.active.type", "scala");
             lookUpConf.put("lookUp.key.col", "0");
             lookUpConf.put("lookUp.val.col", "4");
             lookUpConf.put("lookUp.partition", "true");

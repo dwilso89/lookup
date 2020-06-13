@@ -35,7 +35,7 @@ public class XorApproximateMembershipFilter implements ApproximateMembershipFilt
     }
 
     @Override
-    public Filter<byte[]> read(final InputStream is) throws IOException {
+    public XorApproximateMembershipFilter read(final InputStream is) throws IOException {
         return null;
     }
 

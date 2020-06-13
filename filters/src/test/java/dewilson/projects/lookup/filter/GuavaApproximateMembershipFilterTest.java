@@ -1,7 +1,10 @@
 package dewilson.projects.lookup.filter;
 
 import com.google.common.base.Charsets;
+import com.google.common.collect.Maps;
 import com.google.common.primitives.Longs;
+import dewilson.projects.lookup.filter.api.ApproximateMembershipFilter;
+import dewilson.projects.lookup.filter.api.FilterFactory;
 import dewilson.projects.lookup.filter.impl.GuavaApproximateMembershipFilter;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -10,7 +13,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -27,6 +32,25 @@ class GuavaApproximateMembershipFilterTest {
                                 "d".getBytes(Charsets.UTF_8)
                         ).stream())
                 .build();
+        assertTrue(filter.probablyExists("a".getBytes(Charsets.UTF_8)));
+        assertTrue(filter.probablyExists("b".getBytes(Charsets.UTF_8)));
+        assertTrue(filter.probablyExists("c".getBytes(Charsets.UTF_8)));
+        assertTrue(filter.probablyExists("d".getBytes(Charsets.UTF_8)));
+    }
+
+    @Test
+    void buildFilterWithFactory() {
+        final Stream<byte[]> keyStream = Arrays.asList(
+                "a".getBytes(Charsets.UTF_8),
+                "b".getBytes(Charsets.UTF_8),
+                "c".getBytes(Charsets.UTF_8),
+                "d".getBytes(Charsets.UTF_8))
+                .stream();
+        final Map<String, String> configuration = Maps.newHashMap();
+        configuration.put("lookUp.filter.type", GuavaApproximateMembershipFilter.TYPE);
+        final ApproximateMembershipFilter filter = FilterFactory.getApproximateMembershipFilter(
+                GuavaApproximateMembershipFilter.TYPE, configuration, keyStream);
+
         assertTrue(filter.probablyExists("a".getBytes(Charsets.UTF_8)));
         assertTrue(filter.probablyExists("b".getBytes(Charsets.UTF_8)));
         assertTrue(filter.probablyExists("c".getBytes(Charsets.UTF_8)));

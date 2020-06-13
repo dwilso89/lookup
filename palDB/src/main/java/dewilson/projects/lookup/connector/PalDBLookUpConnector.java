@@ -14,6 +14,7 @@ import dewilson.projects.lookup.api.support.DefaultSupportTypes;
 import dewilson.projects.lookup.api.support.Support;
 import dewilson.projects.lookup.filter.HadoopApproximateMembershipFilter;
 import dewilson.projects.lookup.filter.api.ApproximateMembershipFilter;
+import dewilson.projects.lookup.filter.api.FilterFactory;
 import dewilson.projects.lookup.filter.impl.GuavaApproximateMembershipFilter;
 import dewilson.projects.lookup.filter.impl.ScalaApproximateMembershipFilter;
 import dewilson.projects.lookup.impl.CSVKVReader;
@@ -178,29 +179,9 @@ public class PalDBLookUpConnector implements LookUpConnector {
                 .trimResults()
                 .split(this.config.getOrDefault(Configuration.FILTERS_KEY, Configuration.DEFAULT_FILTERS))) {
             LOG.info("Creating filter [{}]", filterType);
-            final ApproximateMembershipFilter approximateMembershipFilter;
-            switch (filterType) {
-                case "guava":
-                    approximateMembershipFilter = new GuavaApproximateMembershipFilter.Builder()
-                            .expectedElements(getAllKeys().count())
-                            .elements(getAllKeys())
-                            .build();
-                    break;
-                case "scala":
-                    approximateMembershipFilter = new ScalaApproximateMembershipFilter.Builder()
-                            .expectedElements(getAllKeys().count())
-                            .elements(getAllKeys())
-                            .build();
-                    break;
-                case "hadoop":
-                    approximateMembershipFilter = new HadoopApproximateMembershipFilter.Builder()
-                            .elements(getAllKeys())
-                            .build();
-                    break;
-                default:
-                    throw new UnsupportedOperationException(String.format("Unsupported filter type [%s]", filterType));
+            this.config.put("", String.valueOf(getAllKeys().count()));
+            final ApproximateMembershipFilter approximateMembershipFilter = FilterFactory.getApproximateMembershipFilter(filterType, this.config, getAllKeys());
 
-            }
             final File bloomFilterFile = new File(getWorkDir() + "/" + filterType);
             try (final BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(bloomFilterFile))) {
                 approximateMembershipFilter.write(bos);
