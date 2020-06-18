@@ -6,17 +6,16 @@ import com.indeed.mph.TableReader;
 import com.indeed.mph.TableWriter;
 import com.indeed.mph.serializers.SmartStringSerializer;
 import com.indeed.util.core.Pair;
-import dewilson.projects.lookup.api.connector.LookUpConnector;
-import dewilson.projects.lookup.api.support.DefaultSupportTypes;
-import dewilson.projects.lookup.api.support.Support;
-import dewilson.projects.lookup.impl.CSVKVReader;
-import dewilson.projects.lookup.impl.SimpleSupport;
+import dewilson.projects.lookup.reader.CSVKVReader;
+import dewilson.projects.lookup.support.DefaultSupportTypes;
+import dewilson.projects.lookup.support.SimpleSupport;
+import dewilson.projects.lookup.support.Support;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Map;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public class MPHLookUpConnector implements LookUpConnector {
 
@@ -35,31 +34,21 @@ public class MPHLookUpConnector implements LookUpConnector {
     }
 
     @Override
-    public boolean idExists(final String id) {
-        return this.reader.containsKey(id);
+    public boolean keyExists(final String key) {
+        return this.reader.containsKey(key);
     }
 
     @Override
-    public String getValue(final String id) {
-        if (this.reader.containsKey(id)) {
+    public String getValue(final String key) {
+        if (this.reader.containsKey(key)) {
             try {
-                return this.reader.get(id);
+                return this.reader.get(key);
             } catch (final IOException ioe) {
-                throw new RuntimeException("Error getting status for id");
+                throw new RuntimeException("Error getting status for key");
             }
         } else {
             return "DNE";
         }
-    }
-
-    @Override
-    public InputStream getFilter(final String type) {
-        throw new UnsupportedOperationException("No filters are supported yet for MPH");
-    }
-
-    @Override
-    public Support getFilterSupport() {
-        return this.filterSupport;
     }
 
     @Override
@@ -94,5 +83,11 @@ public class MPHLookUpConnector implements LookUpConnector {
     public String getConnectorType() {
         return "mph-1.0.4";
     }
+
+    @Override
+    public Stream<String> getAllKeys() {
+        return StreamSupport.stream(this.reader.spliterator(), false).map(Pair::getFirst);
+    }
+
 
 }

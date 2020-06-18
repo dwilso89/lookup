@@ -2,8 +2,7 @@ package dewilson.projects.lookup.server;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dewilson.projects.lookup.api.connector.LookUpConnector;
-import dewilson.projects.lookup.api.connector.LookUpConnectorFactory;
+import dewilson.projects.lookup.service.LookUpServiceWithFilter;
 import org.rapidoid.config.Conf;
 import org.rapidoid.config.Config;
 import org.rapidoid.setup.App;
@@ -28,24 +27,24 @@ public class RapidoidRestServer {
 
         // configure LookUp service...
         final Config lookUpConf = Conf.section("lookUp");
-        final LookUpConnector lookUpConnector = LookUpConnectorFactory.getLookUpConnector(lookUpConf.toFlatMap());
+        final LookUpServiceWithFilter lookUpServiceWithFilter = new LookUpServiceWithFilter(lookUpConf.toFlatMap());
 
         // handle errors...
         My.errorHandler((req, resp, error) -> resp.code(500).result("Error handling request"));
 
         // endpoints...
-        On.get("/exists").json((String id) -> lookUpConnector.idExists(id));
+        On.get("/exists").json((String id) -> lookUpServiceWithFilter.keyExists(id));
 
-        On.get("/getValue").managed(true).json((String id) -> lookUpConnector.getValue(id));
+        On.get("/getValue").managed(true).json((String id) -> lookUpServiceWithFilter.getValue(id));
 
-        On.get("/getSupportedFilters").serve(() -> serializeJson(lookUpConnector.getFilterSupport()));
+        On.get("/getSupportedFilters").serve(() -> serializeJson(lookUpServiceWithFilter.getFilterSupport()));
 
         On.get("/getFilter").plain((req, resp) -> {
             req.async(); // mark asynchronous request processing
 
             final byte[] bytes = new byte[CHUNK_TRANSFER_SIZE];
 
-            try (final InputStream is = lookUpConnector.getFilter(req.param("type"))) {
+            try (final InputStream is = lookUpServiceWithFilter.getFilter(req.param("type"))) {
                 int numRead;
                 while (-1 != (numRead = is.read(bytes))) {
                     // if last chunk or partial read for some reason...

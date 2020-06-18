@@ -1,9 +1,15 @@
 package dewilson.projects.lookup.jmh;
 
 import com.google.common.collect.Maps;
-import dewilson.projects.lookup.api.connector.LookUpConnector;
 import dewilson.projects.lookup.connector.BloomMapLookUpConnector;
-import org.openjdk.jmh.annotations.*;
+import dewilson.projects.lookup.connector.LookUpConnector;
+import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.BenchmarkMode;
+import org.openjdk.jmh.annotations.Level;
+import org.openjdk.jmh.annotations.Mode;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.Setup;
+import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
@@ -34,7 +40,7 @@ public class JMHTest {
     @Benchmark
     @BenchmarkMode({Mode.All})
     public boolean exists(MyState myState) throws Exception {
-       return myState.lookup.idExists("2020-20-05");
+       return myState.lookup.keyExists("2020-20-05");
     }
 
     public static void main(String[] args) throws RunnerException {

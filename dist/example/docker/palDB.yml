@@ -8,7 +8,7 @@ lookUp:
     resource:
       type: csv
       location: /opt/lookup/data/GOOG.csv
-  filters: guava,scala,hadoop
+  filters: guava-29.0,scala,hadoop-2.10
   filter.active.type: guava
   key.col: 0
   val.col: 4

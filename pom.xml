@@ -16,7 +16,7 @@
 	</properties>
 
 	<modules>
-		<module>connectors</module>
+		<module>core</module>
 		<module>filters</module>
 		<module>minimal-perfect-hash</module>
 		<module>hadoop</module>

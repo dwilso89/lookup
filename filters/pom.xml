@@ -17,6 +17,11 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>dewilson.projects.lookup</groupId>
+			<artifactId>core</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
@@ -30,6 +35,12 @@
 			<artifactId>bloom-filter_2.11</artifactId>
 			<version>${scala.bloom.version}</version>
 		</dependency>
+		<dependency>
+			<artifactId>fastfilter</artifactId>
+			<groupId>org.fastfilter</groupId>
+			<version>1.0</version>
+		</dependency>
+
 		<!-- Test dependencies -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
@@ -87,6 +98,10 @@
 								<relocation>
 									<pattern>bloomfilter</pattern>
 									<shadedPattern>private.filters.bloomfilter</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>fastfilter_java</pattern>
+									<shadedPattern>private.filters.fastfilter_java</shadedPattern>
 								</relocation>
 							</relocations>
 						</configuration>

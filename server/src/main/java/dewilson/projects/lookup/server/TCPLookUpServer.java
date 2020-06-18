@@ -1,9 +1,14 @@
 package dewilson.projects.lookup.server;
 
-import dewilson.projects.lookup.api.connector.LookUpConnector;
-import dewilson.projects.lookup.api.connector.LookUpConnectorFactory;
+import dewilson.projects.lookup.connector.LookUpConnector;
+import dewilson.projects.lookup.connector.LookUpConnectorFactory;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.*;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -24,7 +29,7 @@ class TCPLookUpServer {
             final Map<String, String> lookUpConf = new HashMap<>();
             lookUpConf.put("port", "8888");
             lookUpConf.put("lookUp.connector.type", "palDB-1.2.0");
-            lookUpConf.put("lookUp.connector.resource", "./data/GOOG.csv");
+            lookUpConf.put("lookUp.connector.resource.location", "./data/GOOG.csv");
             lookUpConf.put("lookUp.connector.resource.type", "csv");
             lookUpConf.put("lookUp.work.dir", "../target/");
             lookUpConf.put("lookUp.filters", " scala,guava-29.0,hadoop-2.10");
@@ -83,7 +88,7 @@ class TCPLookUpServer {
 
         @Override
         protected void channelRead0(final ChannelHandlerContext ctx, final String s) {
-            final String result = lookUpConnector.idExists(s.trim()) ? "true\n" : "false\n";
+            final String result = lookUpConnector.keyExists(s.trim()) ? "true\n" : "false\n";
             ctx.channel().writeAndFlush(result);
         }
 

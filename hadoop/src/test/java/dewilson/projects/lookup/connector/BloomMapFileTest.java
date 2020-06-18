@@ -1,7 +1,6 @@
 package dewilson.projects.lookup.connector;
 
 import com.google.common.collect.Maps;
-import dewilson.projects.lookup.api.connector.LookUpConnector;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.BloomMapFile;
 import org.apache.hadoop.io.IOUtils;
@@ -15,9 +14,12 @@ import java.io.FileInputStream;
 import java.nio.file.Path;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class BloomMapFileTest {
+class BloomMapFileTest {
 
     private static String bloomMapFileResource;
 
@@ -50,12 +52,12 @@ public class BloomMapFileTest {
 
         long start = System.currentTimeMillis();
         for(int i = 0; i < 100000; i++){
-            lookup.idExists("2025-05-05");
+            lookup.keyExists("2025-05-05");
         }
         System.out.println(System.currentTimeMillis() - start);
 
-        assertTrue(lookup.idExists("2020-05-05"));
-        assertFalse(lookup.idExists("2025-05-05"));
+        assertTrue(lookup.keyExists("2020-05-05"));
+        assertFalse(lookup.keyExists("2025-05-05"));
     }
 
     @Test
@@ -87,6 +89,13 @@ public class BloomMapFileTest {
                 new DataInputStream(lookup.getFilter("dynamic-hadoop-bloommap-2.10.0")));
 
         assertArrayEquals(originalDynamicBloomFilter, returnedDynamicBloomFilter);
+    }
+
+    @Test
+    void testGetAllKeys() throws Exception {
+        final BloomMapLookUpConnector lookup = new BloomMapLookUpConnector();
+        lookup.initialize(Map.of("lookUp.connector.resource.type", "dir"));
+        lookup.loadResource(bloomMapFileResource);
     }
 
 

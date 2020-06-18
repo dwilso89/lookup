@@ -5,7 +5,6 @@ import com.indeed.mph.TableConfig;
 import com.indeed.mph.TableWriter;
 import com.indeed.mph.serializers.SmartStringSerializer;
 import com.indeed.util.core.Pair;
-import dewilson.projects.lookup.api.connector.LookUpConnector;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -16,7 +15,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MPHTest {
 
@@ -66,8 +67,8 @@ class MPHTest {
         lookup.initialize(map);
         lookup.loadResource("src/test/resources/GOOG_2020.csv");
 
-        assertTrue(lookup.idExists("2020-05-05"));
-        assertFalse(lookup.idExists("2025-05-05"));
+        assertTrue(lookup.keyExists("2020-05-05"));
+        assertFalse(lookup.keyExists("2025-05-05"));
     }
 
 }

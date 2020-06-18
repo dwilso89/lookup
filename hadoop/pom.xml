@@ -14,7 +14,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>dewilson.projects.lookup</groupId>
-			<artifactId>connectors</artifactId>
+			<artifactId>core</artifactId>
 			<version>${project.parent.version}</version>
 			<scope>provided</scope>
 		</dependency>

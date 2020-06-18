@@ -3,7 +3,6 @@ package dewilson.projects.lookup.connector;
 import com.google.common.collect.Maps;
 import com.linkedin.paldb.api.PalDB;
 import com.linkedin.paldb.api.StoreWriter;
-import dewilson.projects.lookup.api.connector.LookUpConnector;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -13,7 +12,9 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PalDBTest {
 
@@ -58,8 +59,8 @@ class PalDBTest {
         lookup.initialize(map);
         lookup.loadResource("src/test/resources/GOOG_2020.csv");
 
-        assertTrue(lookup.idExists("2020-05-05"));
-        assertFalse(lookup.idExists("2025-05-05"));
+        assertTrue(lookup.keyExists("2020-05-05"));
+        assertFalse(lookup.keyExists("2025-05-05"));
     }
 
 }
