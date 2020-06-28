@@ -32,7 +32,7 @@ class TCPLookUpServer {
             lookUpConf.put("lookUp.connector.resource.location", "./data/GOOG.csv");
             lookUpConf.put("lookUp.connector.resource.type", "csv");
             lookUpConf.put("lookUp.work.dir", "../target/");
-            lookUpConf.put("lookUp.filters", " scala,guava-29.0,hadoop-2.10");
+            lookUpConf.put("lookUp.filters", "scala,guava-29.0,hadoop-2.10");
             lookUpConf.put("lookUp.filter.active.type", "scala");
             lookUpConf.put("lookUp.key.col", "0");
             lookUpConf.put("lookUp.val.col", "4");

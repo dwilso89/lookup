@@ -15,6 +15,8 @@
 		<rapidoid.version>5.5.5</rapidoid.version>
 		<logback.version>1.2.3</logback.version>
 		<netty.version>4.1.36.Final</netty.version>
+		<nano.httpd.version>2.3.1</nano.httpd.version>
+		<junixsocket.version>2.3.2</junixsocket.version>
 	</properties>
 
 	<dependencies>
@@ -27,7 +29,12 @@
 			<groupId>dewilson.projects.lookup</groupId>
 			<artifactId>core</artifactId>
 			<version>${project.parent.version}</version>
-			<scope>provided</scope>
+			<!-- <scope>provided</scope>-->
+		</dependency>
+		<dependency>
+			<groupId>dewilson.projects.lookup</groupId>
+			<artifactId>client</artifactId>
+			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.rapidoid</groupId>
@@ -38,6 +45,21 @@
 			<groupId>io.netty</groupId>
 			<artifactId>netty-all</artifactId>
 			<version>${netty.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.nanohttpd</groupId>
+			<artifactId>nanohttpd</artifactId>
+			<version>${nano.httpd.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.kohlschutter.junixsocket</groupId>
+			<artifactId>junixsocket-core</artifactId>
+			<version>${junixsocket.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.kohlschutter.junixsocket</groupId>
+			<artifactId>junixsocket-rmi</artifactId>
+			<version>${junixsocket.version}</version>
 		</dependency>
 	</dependencies>
 

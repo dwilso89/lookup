@@ -1,4 +1,4 @@
-package dewilson.projects.lookup.client.tcp;
+package dewilson.projects.lookup.client;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,4 +28,5 @@ public class SimpleTCPClient {
         this.out.close();
         this.clientSocket.close();
     }
+
 }

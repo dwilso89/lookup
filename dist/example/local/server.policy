@@ -1,0 +1,3 @@
+grant codeBase "file:/Users/p72521/IdeaProjects/lookupserver/dist/target" {
+    permission java.security.AllPermission;
+};

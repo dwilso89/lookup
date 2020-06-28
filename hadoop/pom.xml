@@ -13,6 +13,11 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>me.k11i</groupId>
+			<artifactId>xor-filter</artifactId>
+			<version>0.1.1</version>
+		</dependency>
+		<dependency>
 			<groupId>dewilson.projects.lookup</groupId>
 			<artifactId>core</artifactId>
 			<version>${project.parent.version}</version>
@@ -291,6 +296,13 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>komiya</id>
+			<url>https://dl.bintray.com/komiya-atsushi/maven</url>
+		</repository>
+	</repositories>
 
 	<build>
 		<plugins>

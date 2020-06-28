@@ -4,13 +4,10 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.BloomMapFile;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
-import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Text;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.stream.LongStream;
@@ -72,6 +69,7 @@ class ScalaBloomFilterMapFileTest {
         configuration.setInt(IO_MAPFILE_BLOOM_SIZE_KEY, elements);
         configuration.setLong("bloom.filter.expected.elements", elements);
 
+
         final BloomMapFile.Writer hadoopBloomMapFileWriter = new BloomMapFile.Writer(
                 configuration,
                 new org.apache.hadoop.fs.Path("/tmp/hadoop-bloom-mapfile/"),
@@ -82,13 +80,11 @@ class ScalaBloomFilterMapFileTest {
                 configuration,
                 new org.apache.hadoop.fs.Path("/tmp/guava-bloom-mapfile/"),
                 BloomMapFile.Writer.keyClass(LongWritable.class),
-                BloomMapFile.Writer.valueClass(NullWritable.class),
-                BloomMapFile.Writer.compression(SequenceFile.CompressionType.NONE));
+                BloomMapFile.Writer.valueClass(NullWritable.class));
 
-
-        final ScalaBloomFilterMapFile.Writer scalaBloomFilterMapFileWriter = new ScalaBloomFilterMapFile.Writer(
+        final XorKomiyaXorFilterMapFile.Writer komiyaBloomFilterMapFileWriter = new XorKomiyaXorFilterMapFile.Writer(
                 configuration,
-                new org.apache.hadoop.fs.Path("/tmp/scala-bloom-mapfile/"),
+                new org.apache.hadoop.fs.Path("/tmp/komiya-xor-mapfile/"),
                 BloomMapFile.Writer.keyClass(LongWritable.class),
                 BloomMapFile.Writer.valueClass(NullWritable.class));
 
@@ -96,8 +92,8 @@ class ScalaBloomFilterMapFileTest {
         LongStream.range(0L, elements).forEach(l -> {
             try {
                 key.set(l);
+                komiyaBloomFilterMapFileWriter.append(key, NullWritable.get());
                 guavaBloomFilterMapFileWriter.append(key, NullWritable.get());
-                scalaBloomFilterMapFileWriter.append(key, NullWritable.get());
                 hadoopBloomMapFileWriter.append(key, NullWritable.get());
             } catch (final IOException ioe) {
                 throw new RuntimeException(ioe);
@@ -105,6 +101,6 @@ class ScalaBloomFilterMapFileTest {
         });
         hadoopBloomMapFileWriter.close();
         guavaBloomFilterMapFileWriter.close();
-        scalaBloomFilterMapFileWriter.close();
+        komiyaBloomFilterMapFileWriter.close();
     }
 }
